@@ -12,7 +12,7 @@ export const storyTitle = 'My Story';
 
 export const sections = [
   {
-    when: 'ca. 2000s',
+    when: 'Childhood',
     title: 'A scar and a question',
     text: `I was raised by my grandparents in a rural village in China. When I was two, the village barefoot doctor stitched a cut on my face with ordinary thread and no anesthesia; the scar is still there. Safer care existed even then. It simply had not reached us. That scar planted the question I still work on: why does knowledge that could protect people so often fail to reach those who need it most?`,
   },
@@ -78,7 +78,7 @@ export const sections = [
       {
         images: [
           { src: 'assets/story-dog-puppy.jpg', w: 1200, h: 900, alt: 'Momo as a one-month-old puppy' },
-          { src: 'assets/story-dog-now.jpg', w: 192, h: 144, alt: 'Momo today' },
+          { src: 'assets/story-dog-now.jpg', w: 1097, h: 823, alt: 'Momo today' },
         ],
         caption: `Momo at one month old, and today.`,
       },
