@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import './App.css';
-import { content, ui, DEFAULT_LANG, LANG_KEY, RESUME_URL } from './i18n';
+import { content, RESUME_URL } from './i18n';
+import { useLang, Photo, SiteNav, SiteFooter, external, BASE } from './chrome';
 import RetractionChart from './figures/RetractionChart';
 import LandfillMap from './figures/LandfillMap';
 
@@ -10,23 +11,11 @@ import LandfillMap from './figures/LandfillMap';
  * handles rendering and interaction.
  */
 
-const external = { target: '_blank', rel: 'noreferrer' };
-const BASE = import.meta.env.BASE_URL;
-
 const makeValidators = (t) => ({
   name: (v) => (v.trim().length < 2 ? t.errName : ''),
   email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : t.errEmail),
   message: (v) => (v.trim().length < 10 ? t.errMessage : ''),
 });
-
-const readSavedLang = () => {
-  try {
-    const saved = localStorage.getItem(LANG_KEY);
-    return Object.hasOwn(content, saved) ? saved : DEFAULT_LANG;
-  } catch {
-    return DEFAULT_LANG;
-  }
-};
 
 const emptyForm = { name: '', email: '', subject: '', message: '' };
 
@@ -62,34 +51,19 @@ function Icon({ name }) {
   );
 }
 
-/** Image from public/; hidden until the file has loaded, and never shown if it is missing. */
-function Photo({ src, alt, className, onStatus }) {
-  const [state, setState] = useState('loading');
-  const report = (next) => {
-    setState(next);
-    onStatus?.(next);
-  };
-  if (state === 'error') return null;
-  return (
-    <img
-      className={`${className} ${state === 'ok' ? '' : 'is-loading'}`}
-      src={`${BASE}${src}`}
-      alt={alt}
-      onLoad={() => report('ok')}
-      onError={() => report('error')}
-    />
-  );
-}
-
 function Authors({ authors }) {
   return authors
     .split(/(Guo, J\.)/)
     .map((part, i) => (part === 'Guo, J.' ? <strong key={i}>{part}</strong> : <span key={i}>{part}</span>));
 }
 
+const homeTitle = (lang, c) => `${c.profile.name} | ${lang === 'zh' ? '个人主页' : 'Portfolio'}`;
+
+// Thumbnails under Positionality that lead to the story page
+const STORY_THUMBS = ['assets/story-hopcroft.jpg', 'assets/story-commencement.jpg', 'assets/story-dog-now.jpg'];
+
 function App() {
-  const [lang, setLang] = useState(readSavedLang);
-  const t = ui[lang];
+  const { lang, t, c, toggleLang } = useLang(homeTitle);
   const {
     NEXT_LINE,
     profile,
@@ -106,7 +80,7 @@ function App() {
     retractionChart,
     landfillMap,
     publications,
-  } = content[lang];
+  } = c;
   // Chinese fields left empty fall back to the English text (marked lang="en" for screen readers)
   const fromEn = (key) =>
     profile[key]
@@ -116,7 +90,6 @@ function App() {
   const positionality = fromEn('positionality');
   const validators = makeValidators(t);
   const [activeSection, setActiveSection] = useState('home');
-  const [menuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('all');
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
@@ -127,23 +100,19 @@ function App() {
   // LANGUAGE
   // ============================================
 
+  // Arriving from another page with #section (e.g. story.html → #research): the browser looks for
+  // the anchor before React has rendered it, so scroll there once the page is on screen.
   useEffect(() => {
-    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-    document.title = `${profile.name} | ${lang === 'zh' ? '个人主页' : 'Portfolio'}`;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+    requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'start' }));
+  }, []);
+
+  // Clear form messages when the language changes
+  useEffect(() => {
     setErrors({});
     setTouched({});
-  }, [lang, profile.name]);
-
-  // Only a manual switch is remembered
-  const toggleLang = () => {
-    const next = lang === 'zh' ? 'en' : 'zh';
-    setLang(next);
-    try {
-      localStorage.setItem(LANG_KEY, next);
-    } catch {
-      // storage unavailable (private mode): the choice just won't persist
-    }
-  };
+  }, [lang]);
 
   // ============================================
   // SCROLL & ACTIVE NAV HIGHLIGHT
@@ -152,7 +121,6 @@ function App() {
   const scrollTo = (e, id) => {
     e.preventDefault();
     document.getElementById(id)?.scrollIntoView({ block: 'start' });
-    setMenuOpen(false);
   };
 
   // Direction cards jump to their project; clear the filter first so the card is on the page
@@ -298,51 +266,7 @@ function App() {
 
   return (
     <>
-      {/* Navigation Bar */}
-      <nav id="navbar" aria-label={lang === 'zh' ? '主导航' : 'Main'}>
-        <div className="nav-brand">
-          <a href="#home" onClick={(e) => scrollTo(e, 'home')}>
-            {profile.shortName}
-          </a>
-        </div>
-        <ul id="nav-menu" className={`nav-menu ${menuOpen ? 'active' : ''}`}>
-          {navLinks.map(({ id, label }) => (
-            <li key={id}>
-              <a
-                href={`#${id}`}
-                className={`nav-link ${activeSection === id ? 'active' : ''}`}
-                aria-current={activeSection === id ? 'true' : undefined}
-                onClick={(e) => scrollTo(e, id)}
-              >
-                {label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className="nav-actions">
-          <button
-            type="button"
-            className="lang-toggle"
-            onClick={toggleLang}
-            aria-label={t.switchLabel}
-            title={t.switchLabel}
-          >
-            {t.switchTo}
-          </button>
-          <button
-            type="button"
-            className={`nav-toggle ${menuOpen ? 'active' : ''}`}
-            aria-label={t.menu}
-            aria-expanded={menuOpen}
-            aria-controls="nav-menu"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        </div>
-      </nav>
+      <SiteNav c={c} t={t} lang={lang} toggleLang={toggleLang} current={activeSection} onSectionClick={scrollTo} />
 
       {/* Hero Section */}
       <section id="home" className="hero">
@@ -462,6 +386,17 @@ function App() {
               <p lang={positionality.lang}>{positionality.text}</p>
             </div>
           )}
+
+          <div className="story-teaser">
+            <div className="story-thumbs">
+              {STORY_THUMBS.map((src) => (
+                <Photo key={src} src={src} alt="" className="story-thumb" />
+              ))}
+            </div>
+            <a href={`${BASE}story.html`} className="text-link story-link">
+              {t.readStory} <span aria-hidden="true">→</span>
+            </a>
+          </div>
 
           <div className="about-grid">
             <div>
@@ -695,21 +630,7 @@ function App() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container footer-content">
-          <p>
-            &copy; {new Date().getFullYear()} {profile.name}. {t.rights}
-          </p>
-          <div className="social-links">
-            {[...socials, { label: t.resume, url: RESUME_URL }].map(({ label, url }) => (
-              <a key={label} href={url} {...(!url.startsWith('mailto:') && external)}>
-                {label}
-              </a>
-            ))}
-          </div>
-        </div>
-      </footer>
+      <SiteFooter c={c} t={t} />
     </>
   );
 }

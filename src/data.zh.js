@@ -70,6 +70,7 @@ export const navLinks = [
   { id: 'experience', label: '经历' },
   { id: 'research', label: '研究' },
   { id: 'contact', label: '联系' },
+  { id: 'story', label: '我的故事', href: 'story.html' },
 ];
 
 export const education = [

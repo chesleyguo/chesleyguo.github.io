@@ -1344,3 +1344,164 @@ a:hover {
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+/* ==========================================================================
+   Story teaser (About) and My Story page
+   ========================================================================== */
+
+.story-teaser {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+}
+
+.story-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.story-thumb {
+    display: block;
+    width: 160px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.story-thumb.is-loading,
+.story-photo.is-loading,
+.story-figure.is-loading {
+    display: none;
+}
+
+.story-link {
+    font-size: 17px;
+}
+
+.story-page {
+    padding: 48px 0 96px;
+}
+
+.story-back {
+    display: inline-block;
+    margin-bottom: 28px;
+    font-size: 16px;
+}
+
+.story-title {
+    margin-bottom: 48px;
+    font: 600 clamp(40px, 4.4vw, 56px)/1.1 var(--f-serif);
+    letter-spacing: -0.01em;
+    color: var(--c-blue);
+}
+
+.story-timeline {
+    list-style: none;
+    max-width: 960px;
+}
+
+.story-section {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 32px;
+}
+
+.story-when {
+    padding-top: 6px;
+    font: 500 15px/1.5 var(--f-mono);
+    letter-spacing: 0.04em;
+    color: var(--c-gold-text);
+    text-align: right;
+}
+
+/* the vertical line runs down the content column */
+.story-body {
+    position: relative;
+    padding: 0 0 56px 32px;
+    border-left: 2px solid var(--c-border);
+}
+
+.story-body::before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--c-blue);
+    border: 2px solid var(--c-bg);
+}
+
+.story-section:last-child .story-body {
+    padding-bottom: 0;
+}
+
+.story-heading {
+    margin-bottom: 12px;
+    font: 600 26px/1.25 var(--f-serif);
+    color: var(--c-blue);
+}
+
+.story-text {
+    max-width: 680px;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.story-figure {
+    max-width: 680px;
+    margin: 24px 0 0;
+}
+
+.story-photos {
+    display: flex;
+    gap: 12px;
+}
+
+.story-photo {
+    display: block;
+    flex-basis: 0;
+    min-width: 0;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.story-figure figcaption {
+    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--c-text-2);
+}
+
+@media (max-width: 760px) {
+    .story-section {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 6px;
+    }
+
+    .story-when {
+        padding: 0 0 0 34px;
+        text-align: left;
+    }
+
+    .story-body {
+        padding-left: 24px;
+    }
+}
+
+/* paired photos stack on narrow screens */
+@media (max-width: 640px) {
+    .story-photos {
+        flex-direction: column;
+    }
+
+    .story-photo {
+        flex-basis: auto;
+    }
+}

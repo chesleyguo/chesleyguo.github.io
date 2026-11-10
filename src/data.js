@@ -79,6 +79,7 @@ export const navLinks = [
   { id: 'experience', label: 'Experience' },
   { id: 'research', label: 'Research' },
   { id: 'contact', label: 'Contact' },
+  { id: 'story', label: 'My Story', href: 'story.html' }, // separate page
 ];
 
 export const education = [
