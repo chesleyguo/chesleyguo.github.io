@@ -74,9 +74,9 @@ const STORY_THUMBS = [
     src: 'assets/story-commencement.jpg',
     w: 1200,
     h: 900,
-    alt: 'Streamers flying over graduates at UIUC commencement, 2024',
+    alt: 'Streamers flying over graduates in Memorial Stadium at UIUC commencement, 2024',
   },
-  { src: 'assets/story-dog-now.jpg', w: 1097, h: 823, alt: 'Momo (墨墨), Chesley’s dog, looking up at the camera' },
+  { src: 'assets/story-dog-now.jpg', w: 1097, h: 823, alt: 'Momo (墨墨), my little brother, looking up at the camera' },
 ];
 
 // About, Experience, Research, Contact: gold number + serif title + rule with a gold tab

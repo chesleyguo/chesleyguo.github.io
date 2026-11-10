@@ -25,7 +25,7 @@ export const sections = [
     photos: [
       {
         images: [
-          { src: 'assets/story-pang-ying.jpg', w: 1200, h: 899, alt: 'Chesley with debater and author Pang Ying (庞颖) at an event' },
+          { src: 'assets/story-pang-ying.jpg', w: 1200, h: 899, alt: 'Chesley with debater and author Pang Ying (庞颖) at a book event for Think Like a Debater' },
           { src: 'assets/story-signed-book.jpg', w: 898, h: 1200, alt: 'Pang Ying’s handwritten inscription “我偏要勉强” inside Think Like a Debater' },
         ],
         caption: `With debater and author Pang Ying, who inscribed her book Think Like a Debater for me: “我偏要勉强” (“I choose to strive anyway”).`,
@@ -62,7 +62,7 @@ export const sections = [
             src: 'assets/story-commencement.jpg',
             w: 1200,
             h: 900,
-            alt: 'Graduates in caps and gowns as streamers fly over the stadium at UIUC commencement, 2024',
+            alt: 'Graduates in caps and gowns as streamers fly over Memorial Stadium at UIUC commencement, 2024',
             confetti: true, // click for a small confetti burst (off under reduced motion)
             confettiLabel: 'Commencement at UIUC, 2024. Click to throw confetti.',
           },
