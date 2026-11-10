@@ -36,6 +36,12 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/jg1023',
 };
 
+// Quote banner between the research-direction cards and About (from My Story)
+export const quote = {
+  text: 'Why does knowledge that could protect people so often fail to reach those who need it most?',
+  label: 'The question behind my work',
+};
+
 // Hero right column ("At a glance")
 export const glance = {
   education: [
@@ -193,6 +199,11 @@ export const research = [
     date: 'Aug 2026 – Present',
     category: 'llm',
     featured: true,
+    // Key numbers on the card (first navy, second gold). Same sources as the Finding below.
+    stats: [
+      { value: '2 in 3', label: 'answers still treated a retracted trial as valid' },
+      { value: '≤2%', label: 'once the prompt mentioned the retraction' },
+    ],
     question: 'Do ChatGPT, Gemini and Claude still present retracted clinical trials as valid evidence?',
     // 3,600 = 3,000 first-run responses + 600 repeats (llm-retracted-clinical-evidence/docs/STATUS.md)
     method:
@@ -206,6 +217,11 @@ export const research = [
   },
   {
     id: 'methane',
+    // numbers_audit.md: +41% naive detected-only mean (1-day group); −3% NPE
+    stats: [
+      { value: '+41%', label: 'bias from averaging only detected plumes at single-overpass sites' },
+      { value: '−3%', label: 'bias with our selection-aware method' },
+    ],
     title: 'Selection-Aware Inference for Landfill Methane',
     org: 'MDevEng capstone · BEST Lab, UC Berkeley',
     role: 'Advisor: Prof. Alice Agogino',
@@ -234,6 +250,7 @@ export const research = [
     category: 'causal',
     featured: true,
     // 18 cameras: OakDOT six-month report (public)
+    stats: [{ value: '18', label: 'speed safety cameras in Oakland’s pilot' }],
     question: 'Do Oakland’s 18 speed safety cameras change how people drive?',
     method:
       'A regression discontinuity in time (RDiT) at the two rollout cutoffs separates the effect of camera warnings from the added effect of fines, on three years of high-frequency speed and violation data in a secure GCP environment (CPRA/CCPA).',

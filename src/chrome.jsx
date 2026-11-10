@@ -40,24 +40,29 @@ export function useLang(pageTitle) {
   return { lang, t: ui[lang], c, toggleLang };
 }
 
-/** Image from public/; hidden until the file has loaded, and never shown if it is missing. */
-export function Photo({ src, alt, className = '', style, onStatus }) {
-  const [state, setState] = useState('loading');
-  const report = (next) => {
-    setState(next);
-    onStatus?.(next);
-  };
-  if (state === 'error') return null;
+/**
+ * Image from public/. `width`/`height` reserve its space while it loads (no layout shift), and it
+ * loads lazily unless `eager`. If the file is missing the image is removed instead of showing a
+ * broken icon.
+ */
+export function Photo({ src, alt, width, height, eager = false, className = '', style, onStatus }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
   return (
     <img
-      className={`${className} ${state === 'ok' ? '' : 'is-loading'}`}
+      className={className}
       style={style}
       src={`${BASE}${src}`}
       alt={alt}
-      // No loading="lazy": the image is display:none until it loads, and Chrome never fetches
-      // lazy images that are not displayed.
-      onLoad={() => report('ok')}
-      onError={() => report('error')}
+      width={width}
+      height={height}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      onLoad={() => onStatus?.('ok')}
+      onError={() => {
+        setFailed(true);
+        onStatus?.('error');
+      }}
     />
   );
 }
@@ -122,9 +127,25 @@ export function SiteFooter({ c, t }) {
   return (
     <footer className="footer">
       <div className="container footer-content">
-        <p>
-          &copy; {new Date().getFullYear()} {c.profile.name}. {t.rights}
-        </p>
+        <div className="footer-left">
+          <a href={`${BASE}story.html#momo`} className="momo-link" aria-label={t.momoLabel}>
+            <img
+              className="momo-avatar"
+              src={`${BASE}assets/momo-avatar.jpg`}
+              alt=""
+              width="48"
+              height="48"
+              loading="lazy"
+              decoding="async"
+            />
+            <span className="momo-text" aria-hidden="true">
+              {t.momoSays}
+            </span>
+          </a>
+          <p>
+            &copy; {new Date().getFullYear()} {c.profile.name}. {t.rights}
+          </p>
+        </div>
         <div className="social-links">
           {[...c.socials, { label: t.resume, url: RESUME_URL }].map(({ label, url }) => (
             <a key={label} href={url} {...(!url.startsWith('mailto:') && external)}>

@@ -1,9 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, Suspense, lazy, useEffect, useState } from 'react';
 import './App.css';
 import { content, RESUME_URL } from './i18n';
 import { useLang, Photo, SiteNav, SiteFooter, external, BASE } from './chrome';
 import RetractionChart from './figures/RetractionChart';
-import LandfillMap from './figures/LandfillMap';
+import HeroTexture from './figures/HeroTexture';
+
+// The map pulls in the U.S. state outlines (~100 KB); load it only when the page needs it
+const LandfillMap = lazy(() => import('./figures/LandfillMap'));
 
 /**
  * Jiayi (Chesley) Guo's Portfolio
@@ -60,7 +63,33 @@ function Authors({ authors }) {
 const homeTitle = (lang, c) => `${c.profile.name} | ${lang === 'zh' ? '个人主页' : 'Portfolio'}`;
 
 // Thumbnails under Positionality that lead to the story page
-const STORY_THUMBS = ['assets/story-hopcroft.jpg', 'assets/story-commencement.jpg', 'assets/story-dog-now.jpg'];
+const STORY_THUMBS = [
+  {
+    src: 'assets/story-hopcroft.jpg',
+    w: 1200,
+    h: 900,
+    alt: 'Chesley receiving a certificate from John Hopcroft at a summer school ceremony',
+  },
+  {
+    src: 'assets/story-commencement.jpg',
+    w: 1200,
+    h: 900,
+    alt: 'Streamers flying over graduates at UIUC commencement, 2024',
+  },
+  { src: 'assets/story-dog-now.jpg', w: 1097, h: 823, alt: 'Momo (墨墨), Chesley’s dog, looking up at the camera' },
+];
+
+// About, Experience, Research, Contact: gold number + serif title + rule with a gold tab
+function SectionTitle({ num, children }) {
+  return (
+    <div className="section-head">
+      <span className="section-num" aria-hidden="true">
+        {num}
+      </span>
+      <h2>{children}</h2>
+    </div>
+  );
+}
 
 function App() {
   const { lang, t, c, toggleLang } = useLang(homeTitle);
@@ -79,6 +108,7 @@ function App() {
     researchFilters,
     retractionChart,
     landfillMap,
+    quote,
     publications,
   } = c;
   // Chinese fields left empty fall back to the English text (marked lang="en" for screen readers)
@@ -203,7 +233,13 @@ function App() {
         </figure>
       );
     }
-    if (project.figure === 'landfill-map') return <LandfillMap text={landfillMap} />;
+    if (project.figure === 'landfill-map') {
+      return (
+        <Suspense fallback={<div className="map-placeholder" />}>
+          <LandfillMap text={landfillMap} />
+        </Suspense>
+      );
+    }
     return null;
   };
 
@@ -225,6 +261,16 @@ function App() {
           <p className="project-org">
             {project.org} · {project.role}
           </p>
+          {project.stats && (
+            <dl className="project-stats">
+              {project.stats.map((st, i) => (
+                <div key={st.value} className={`project-stat ${i === 0 ? 'is-primary' : 'is-secondary'}`}>
+                  <dt>{st.value}</dt>
+                  <dd>{st.label}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
           <dl className="qmf">
             <div>
               <dt>{t.question}</dt>
@@ -270,6 +316,8 @@ function App() {
 
       {/* Hero Section */}
       <section id="home" className="hero">
+        <HeroTexture />
+        <p className="hero-credit">{t.heroCredit}</p>
         <div className="hero-content">
           <div className="hero-main">
             <p className="hero-eyebrow">
@@ -309,7 +357,7 @@ function App() {
 
           <aside className="glance" aria-labelledby="glance-title">
             <div className="glance-card">
-              <Photo src={profile.photo} alt={t.photoAlt} className="glance-photo" />
+              <Photo src={profile.photo} alt={t.photoAlt} width="600" height="600" eager className="glance-photo" />
               <h2 id="glance-title" className="glance-title">
                 {t.glance}
               </h2>
@@ -370,10 +418,31 @@ function App() {
         </div>
       </div>
 
+      {/* Quote banner */}
+      <aside className="quote-band" aria-label={quote.label}>
+        <div className="container quote-inner">
+          <span className="quote-mark" aria-hidden="true">
+            “
+          </span>
+          <div>
+            <p className="quote-text" lang={quote.text ? undefined : lang === 'zh' ? 'en' : undefined}>
+              {quote.text || content.en.quote.text}
+            </p>
+            <p className="quote-meta">
+              <span>{quote.label}</span>
+              <span aria-hidden="true"> · </span>
+              <a href={`${BASE}story.html`}>
+                {t.readStory} <span aria-hidden="true">→</span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </aside>
+
       {/* About Section */}
       <section id="about" className="section">
         <div className="container">
-          <h2>{t.about}</h2>
+          <SectionTitle num="01">{t.about}</SectionTitle>
           <div className="prose">
             {profile.bio.map((paragraph) => (
               <p key={paragraph.slice(0, 24)}>{paragraph}</p>
@@ -389,8 +458,8 @@ function App() {
 
           <div className="story-teaser">
             <div className="story-thumbs">
-              {STORY_THUMBS.map((src) => (
-                <Photo key={src} src={src} alt="" className="story-thumb" />
+              {STORY_THUMBS.map((img) => (
+                <Photo key={img.src} src={img.src} alt={img.alt} width={img.w} height={img.h} className="story-thumb" />
               ))}
             </div>
             <a href={`${BASE}story.html`} className="text-link story-link">
@@ -435,7 +504,7 @@ function App() {
       {/* Experience Section */}
       <section id="experience" className="section section-alt">
         <div className="container">
-          <h2>{t.experience}</h2>
+          <SectionTitle num="02">{t.experience}</SectionTitle>
           <ol className="timeline">
             {experience.map((job) => (
               <li key={job.company} className="card timeline-item">
@@ -477,7 +546,7 @@ function App() {
       {/* Research Section */}
       <section id="research" className="section">
         <div className="container">
-          <h2>{t.research}</h2>
+          <SectionTitle num="03">{t.research}</SectionTitle>
 
           <div className="filter-buttons" role="group" aria-label={t.filterLabel}>
             {researchFilters.map(({ id, label }) => (
@@ -528,7 +597,7 @@ function App() {
       {/* Contact Section */}
       <section id="contact" className="section section-alt">
         <div className="container">
-          <h2>{t.getInTouch}</h2>
+          <SectionTitle num="04">{t.getInTouch}</SectionTitle>
           <div className="contact-layout">
             <div className="contact-content">
               <p className="contact-intro">{t.contactIntro(NEXT_LINE)}</p>

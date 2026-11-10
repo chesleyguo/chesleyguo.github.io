@@ -29,6 +29,12 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/jg1023',
 };
 
+// 引言横幅：问题原文暂不翻译，显示英文
+export const quote = {
+  text: '',
+  label: '我的研究背后的问题',
+};
+
 export const glance = {
   education: [
     { degree: '发展工程硕士，加州大学伯克利分校', year: '2026' },
@@ -178,6 +184,10 @@ export const research = [
     date: '2026 年 8 月 – 至今',
     category: 'llm',
     featured: true,
+    stats: [
+      { value: '2/3', label: '的回答仍把已撤稿试验当作有效' },
+      { value: '≤2%', label: '提示中说明已撤稿之后' },
+    ],
     question: 'ChatGPT、Gemini 和 Claude 还会把已撤稿的临床试验当作有效证据吗？',
     method:
       '100 项来自 Retraction Watch 的撤稿试验，每项按主题、年份和设计匹配一项对照；共 3,600 条回答（首轮 3,000 条加 600 条重复运行），由与人工编码一致性达 κ = 0.96（几乎完全一致）的 LLM 编码器编码。',
@@ -190,6 +200,10 @@ export const research = [
   },
   {
     id: 'methane',
+    stats: [
+      { value: '+41%', label: '只对检出的羽流取平均时，只飞过一次的设施的偏差' },
+      { value: '−3%', label: '使用我们考虑选择偏差的方法后的偏差' },
+    ],
     title: '考虑选择偏差的填埋场甲烷排放推断',
     org: '发展工程硕士毕业项目 · 伯克利 BEST 实验室',
     role: '导师：Alice Agogino 教授',
@@ -213,6 +227,7 @@ export const research = [
     date: '2026 年 8 月 – 至今',
     category: 'causal',
     featured: true,
+    stats: [{ value: '18', label: '台测速安全摄像头参与奥克兰试点' }],
     question: '奥克兰的 18 台测速安全摄像头能改变人们的驾驶行为吗？',
     method:
       '在两个上线节点做时间断点回归（RDiT），区分摄像头警告的效应与罚款的额外效应；使用三年高频车速与违章数据，在符合 CPRA/CCPA 的安全 GCP 环境中进行。',
