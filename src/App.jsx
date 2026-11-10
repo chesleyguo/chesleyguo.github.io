@@ -62,17 +62,21 @@ function Icon({ name }) {
   );
 }
 
-/** Headshot from public/; renders nothing until the file has loaded, and nothing if it is missing. */
-function Photo({ src, alt }) {
+/** Image from public/; hidden until the file has loaded, and never shown if it is missing. */
+function Photo({ src, alt, className, onStatus }) {
   const [state, setState] = useState('loading');
+  const report = (next) => {
+    setState(next);
+    onStatus?.(next);
+  };
   if (state === 'error') return null;
   return (
     <img
-      className={`glance-photo ${state === 'ok' ? '' : 'is-loading'}`}
+      className={`${className} ${state === 'ok' ? '' : 'is-loading'}`}
       src={`${BASE}${src}`}
       alt={alt}
-      onLoad={() => setState('ok')}
-      onError={() => setState('error')}
+      onLoad={() => report('ok')}
+      onError={() => report('error')}
     />
   );
 }
@@ -380,8 +384,8 @@ function App() {
           </div>
 
           <aside className="glance" aria-labelledby="glance-title">
-            <Photo src={profile.photo} alt={t.photoAlt} />
             <div className="glance-card">
+              <Photo src={profile.photo} alt={t.photoAlt} className="glance-photo" />
               <h2 id="glance-title" className="glance-title">
                 {t.glance}
               </h2>
@@ -424,7 +428,12 @@ function App() {
             {directions.map((d) => (
               <li key={d.project}>
                 <a href={`#project-${d.project}`} className="direction-card" onClick={(e) => openProject(e, d.project)}>
-                  <Icon name={d.icon} />
+                  <span className="direction-top">
+                    <Icon name={d.icon} />
+                    <span className="direction-number" aria-hidden="true">
+                      {String(directions.indexOf(d) + 1).padStart(2, '0')}
+                    </span>
+                  </span>
                   <span className="direction-title">{d.title}</span>
                   <span className="direction-text">{d.text}</span>
                   <span className="direction-more">

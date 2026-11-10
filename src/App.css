@@ -18,6 +18,12 @@
     --c-border: #e5e1d8;
     --c-error: #b42318;
 
+    /* Navy hero / footer */
+    --c-navy-text: #d6e0ec; /* 10.4:1 on #003262 */
+    --c-navy-question: #fddc8a; /* 11.2:1 on #003262 */
+    --c-navy-line: rgba(255, 255, 255, 0.18);
+    --c-gold-text: #8a6a00; /* gold-toned text on white, 5.0:1 */
+
     --f-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
     --f-sans: 'Inter', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     --f-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
@@ -66,6 +72,17 @@ a:hover {
 :focus-visible {
     outline: 3px solid var(--c-blue);
     outline-offset: 3px;
+}
+
+/* On navy, a blue outline would vanish: use gold there (7.2:1), blue again inside white cards */
+#navbar :focus-visible,
+.hero :focus-visible,
+.footer :focus-visible {
+    outline-color: var(--c-gold);
+}
+
+.hero .glance-card :focus-visible {
+    outline-color: var(--c-blue);
 }
 
 [tabindex='-1']:focus:not(:focus-visible) {
@@ -211,13 +228,13 @@ a:hover {
     justify-content: space-between;
     align-items: center;
     gap: 24px;
-    background: var(--c-bg);
-    border-bottom: 1px solid var(--c-border);
+    background: var(--c-blue); /* stays navy while sticky, so it reads over white sections */
+    border-bottom: 1px solid var(--c-navy-line);
 }
 
 .nav-brand a {
     font: 600 26px/1 var(--f-serif);
-    color: var(--c-blue);
+    color: #ffffff;
 }
 
 .nav-menu {
@@ -232,15 +249,15 @@ a:hover {
     display: block;
     padding: 10px 12px;
     font: 500 16px/1.2 var(--f-sans);
-    color: var(--c-ink);
+    color: #ffffff;
 }
 
 .nav-link:hover {
-    color: var(--c-blue);
+    color: var(--c-navy-question);
 }
 
 .nav-link.active {
-    color: var(--c-blue);
+    color: #ffffff;
     font-weight: 600;
 }
 
@@ -265,16 +282,16 @@ a:hover {
     min-width: 48px;
     height: 36px;
     padding: 0 10px;
-    border: 1px solid var(--c-border);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 4px;
-    background: var(--c-bg);
-    color: var(--c-blue);
+    background: transparent;
+    color: #ffffff;
     font: 500 14px/1 var(--f-mono);
     cursor: pointer;
 }
 
 .lang-toggle:hover {
-    border-color: var(--c-blue);
+    border-color: #ffffff;
 }
 
 .nav-toggle {
@@ -293,7 +310,7 @@ a:hover {
     display: block;
     width: 100%;
     height: 2px;
-    background: var(--c-blue);
+    background: #ffffff;
 }
 
 /* ==========================================================================
@@ -303,8 +320,9 @@ a:hover {
 .hero {
     display: flex;
     align-items: center;
-    padding: 56px 0 64px;
-    background: var(--c-bg);
+    padding: 52px 0 60px;
+    background: var(--c-blue);
+    color: #ffffff;
 }
 
 .hero-content {
@@ -323,35 +341,37 @@ a:hover {
 
 .hero-eyebrow {
     margin-bottom: 16px;
-    font: 500 15px/1.4 var(--f-mono);
+    font: 500 14px/1.4 var(--f-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--c-label);
+    color: var(--c-gold); /* 7.2:1 on navy */
 }
 
 .hero-title {
     max-width: none;
     margin-bottom: 18px;
-    font: 600 clamp(44px, 5vw, 64px)/1.05 var(--f-serif);
+    font: 600 clamp(44px, 5.2vw, 68px)/1.04 var(--f-serif);
     letter-spacing: -0.015em;
-    color: var(--c-blue);
+    color: #ffffff;
 }
 
 .hero-next {
-    margin-bottom: 16px;
-    font: 500 22px/1.4 var(--f-sans);
+    margin-bottom: 14px;
+    font: 500 21px/1.4 var(--f-sans);
+    color: #ffffff;
 }
 
 .hero-question {
     margin-bottom: 18px;
-    font: italic 400 21px/1.45 var(--f-serif);
-    color: var(--c-blue);
+    font: italic 400 23px/1.4 var(--f-serif);
+    color: var(--c-navy-question);
 }
 
 .hero-interests {
     margin-bottom: 22px;
-    font-size: 18px;
+    font-size: 17px;
     line-height: 1.5;
+    color: var(--c-navy-text);
 }
 
 .hero-interests-label {
@@ -360,7 +380,7 @@ a:hover {
     font: 500 14px/1.4 var(--f-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--c-label);
+    color: var(--c-navy-text);
 }
 
 /* each research direction stays on one line; breaks only fall between them */
@@ -371,10 +391,10 @@ a:hover {
 .hero-tagline {
     margin-bottom: 28px;
     padding-top: 22px;
-    border-top: 1px solid var(--c-border);
+    border-top: 1px solid var(--c-navy-line);
     font-size: 18px;
     line-height: 1.65;
-    color: var(--c-text-2);
+    color: var(--c-navy-text);
 }
 
 .hero-buttons {
@@ -393,11 +413,22 @@ a:hover {
 
 .glance-photo {
     display: block;
-    width: 160px;
-    height: 160px;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 16px;
     object-fit: cover;
-    border-radius: var(--radius);
-    border: 1px solid var(--c-border);
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 1px var(--c-border); /* keeps the white ring visible on the white card */
+}
+
+/* Short screens (e.g. 1280×720): smaller avatar so the whole first screen fits */
+@media (min-width: 1024px) and (max-height: 760px) {
+    .glance-photo {
+        width: 96px;
+        height: 96px;
+        margin-bottom: 12px;
+    }
 }
 
 .glance-photo.is-loading {
@@ -406,6 +437,12 @@ a:hover {
 
 .glance-card {
     padding: 24px 26px;
+    color: var(--c-ink);
+}
+
+.hero .glance-card {
+    border-color: transparent;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
 }
 
 .glance-title {
@@ -494,6 +531,30 @@ a:hover {
     color: var(--c-blue);
 }
 
+/* Buttons on the navy hero */
+.hero .btn-primary {
+    background: var(--c-gold);
+    border-color: var(--c-gold);
+    color: #002244; /* 9.3:1 on gold */
+}
+
+.hero .btn-primary:hover {
+    background: #ffc845;
+    border-color: #ffc845;
+    color: #002244;
+}
+
+.hero .btn-secondary {
+    background: transparent;
+    border: 1.5px solid #ffffff;
+    color: #ffffff;
+}
+
+.hero .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
 /* ==========================================================================
    Research directions (three cards under the hero)
    ========================================================================== */
@@ -517,8 +578,25 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 24px;
+    padding: 22px 24px 24px;
+    border-top: 4px solid var(--c-blue);
     color: var(--c-ink);
+}
+
+.direction-card:hover {
+    border-top-color: var(--c-blue);
+}
+
+.direction-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.direction-number {
+    font: 500 13px/1 var(--f-mono);
+    letter-spacing: 0.08em;
+    color: var(--c-gold-text);
 }
 
 .direction-card:hover {
@@ -1116,9 +1194,8 @@ a:hover {
    ========================================================================== */
 
 .footer {
-    padding: 32px 0;
-    border-top: 1px solid var(--c-border);
-    background: var(--c-bg);
+    padding: 36px 0;
+    background: var(--c-blue);
 }
 
 .footer-content {
@@ -1128,7 +1205,15 @@ a:hover {
     align-items: center;
     gap: 12px 24px;
     font-size: 16px;
-    color: var(--c-text-2);
+    color: var(--c-navy-text);
+}
+
+.footer .social-links a {
+    color: #ffffff;
+}
+
+.footer .social-links a:hover {
+    text-decoration-color: #ffffff;
 }
 
 .social-links {
@@ -1181,9 +1266,9 @@ a:hover {
         flex-direction: column;
         gap: 0;
         padding: 8px 16px 16px;
-        background: var(--c-bg);
-        border-bottom: 1px solid var(--c-border);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+        background: var(--c-blue);
+        border-bottom: 1px solid var(--c-navy-line);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
     .nav-menu.active {

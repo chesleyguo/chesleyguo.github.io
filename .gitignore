@@ -2,3 +2,8 @@ node_modules
 dist
 .DS_Store
 *.local
+
+.superpowers/
+
+# Full-resolution photo originals: kept locally, never published (public/ is served as-is)
+public/assets/originals/
