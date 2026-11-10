@@ -174,7 +174,7 @@ export const research = [
     category: 'ml',
     featured: true,
     description:
-      'Developing a simulation-based inference (SBI) framework that estimates facility-level, time-averaged methane emissions with calibrated uncertainty from sparse airborne surveys (AVIRIS-NG, GAO; 107 U.S. landfills, 593 flight days). In simulation, averaging only detected overpasses overstates emissions by more than 2×; the framework corrects this by modeling non-detections, instrument detection limits, and survey selection. The pipeline reconciles plume observations with EPA GHGRP Subpart HH and LMOP records. Earlier, I audited EPA’s LMOP register (2,641 landfills) with leave-state-out validation, released a public explorer, and built a methane dashboard now used by Squishy Robotics.',
+      'Developing a simulation-based inference (SBI) framework that estimates facility-level, time-averaged methane emissions with calibrated uncertainty from sparse airborne surveys (AVIRIS-NG, GAO; 107 U.S. landfills, 593 flight days). In simulation, averaging only detected overpasses overstated emissions by about 41% at single-overpass facilities; the framework cuts this bias to about −3% by modeling non-detections, instrument detection limits, and survey selection. The pipeline reconciles plume observations with EPA GHGRP Subpart HH and LMOP records. Earlier, I audited EPA’s LMOP register (2,641 landfills) with leave-state-out validation, released a public explorer, and built a methane dashboard now used by Squishy Robotics.',
     tags: ['Simulation-Based Inference', 'Remote Sensing', 'Uncertainty', 'EPA GHGRP', 'Dashboards'],
   },
   {
