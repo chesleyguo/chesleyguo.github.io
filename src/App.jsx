@@ -1,20 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import {
-  profile,
-  socials,
-  navLinks,
-  education,
-  experience,
-  research,
-  researchFilters,
-  publications,
-  teaching,
-  skills,
-  honors,
-  extensionStudy,
-  stats,
-} from './data';
+import { content, ui, DEFAULT_LANG } from './i18n';
 import {
   Boop,
   Counter,
@@ -32,16 +18,42 @@ import {
  * Content is defined in ./data.js; this component only handles rendering and interaction.
  */
 
-const validators = {
-  name: (v) => (v.trim().length < 2 ? 'Name must be at least 2 characters' : ''),
-  email: (v) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Please enter a valid email address',
-  message: (v) => (v.trim().length < 10 ? 'Message must be at least 10 characters' : ''),
+const makeValidators = (t) => ({
+  name: (v) => (v.trim().length < 2 ? t.errName : ''),
+  email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : t.errEmail),
+  message: (v) => (v.trim().length < 10 ? t.errMessage : ''),
+});
+
+const readSavedLang = () => {
+  try {
+    const saved = localStorage.getItem('lang');
+    return Object.hasOwn(content, saved) ? saved : DEFAULT_LANG;
+  } catch {
+    return DEFAULT_LANG;
+  }
 };
 
 const emptyForm = { name: '', email: '', subject: '', message: '' };
 
 function App() {
+  const [lang, setLang] = useState(readSavedLang);
+  const t = ui[lang];
+  const {
+    profile,
+    socials,
+    navLinks,
+    education,
+    experience,
+    research,
+    researchFilters,
+    publications,
+    teaching,
+    skills,
+    honors,
+    extensionStudy,
+    stats,
+  } = content[lang];
+  const validators = makeValidators(t);
   const [activeSection, setActiveSection] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('all');
@@ -49,6 +61,24 @@ function App() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [sent, setSent] = useState(false);
+
+  // ============================================
+  // LANGUAGE
+  // ============================================
+
+  useEffect(() => {
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    document.title = `${profile.name} | ${lang === 'zh' ? '个人主页' : 'Portfolio'}`;
+    try {
+      localStorage.setItem('lang', lang);
+    } catch {
+      // storage unavailable (private mode): language just won't persist
+    }
+    setErrors({});
+    setTouched({});
+  }, [lang, profile.name]);
+
+  const toggleLang = () => setLang((l) => (l === 'zh' ? 'en' : 'zh'));
 
   // ============================================
   // SMOOTH SCROLL & ACTIVE NAV HIGHLIGHT
@@ -100,7 +130,7 @@ function App() {
 
     if (Object.values(nextErrors).every((msg) => !msg)) {
       // No backend yet: open the visitor's mail client with the message pre-filled
-      const subject = encodeURIComponent(form.subject || `Portfolio inquiry from ${form.name}`);
+      const subject = encodeURIComponent(form.subject || t.defaultSubject(form.name));
       const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`);
       window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
       setForm(emptyForm);
@@ -144,6 +174,15 @@ function App() {
           ))}
         </ul>
         <div className="nav-actions">
+          <button
+            type="button"
+            className="lang-toggle"
+            onClick={toggleLang}
+            aria-label={t.switchLabel}
+            title={t.switchLabel}
+          >
+            {t.switchTo}
+          </button>
           <ThemeToggle />
           <button
             type="button"
@@ -168,7 +207,7 @@ function App() {
         </div>
         <div className="hero-content">
           <p className="hero-greeting">
-            Hi there, I&apos;m{' '}
+            {t.greeting}{' '}
             <span className="wave-hand" role="img" aria-label="waving hand">
               👋
             </span>
@@ -178,7 +217,7 @@ function App() {
             {profile.degree} @ <Sparkles>{profile.school}</Sparkles>
           </p>
           <p className="hero-focus">
-            I love <Typewriter words={profile.passions} />
+            {t.love} <Typewriter key={lang} words={profile.passions} />
           </p>
           <p className="hero-tagline">{profile.tagline}</p>
           <div className="hero-buttons">
@@ -187,14 +226,14 @@ function App() {
               className="btn btn-primary"
               onClick={(e) => scrollTo(e, 'research')}
             >
-              View My Work
+              {t.viewWork}
             </a>
             <a
               href="#contact"
               className="btn btn-secondary"
               onClick={(e) => scrollTo(e, 'contact')}
             >
-              Get In Touch
+              {t.getInTouch}
             </a>
           </div>
         </div>
@@ -204,7 +243,7 @@ function App() {
       {/* About Section */}
       <section id="about" className="section">
         <div className="container">
-          <h2>About Me</h2>
+          <h2>{t.about}</h2>
           <div className="about-grid">
             <div className="about-text">
               {profile.bio.map((paragraph) => (
@@ -240,7 +279,7 @@ function App() {
               </div>
             </div>
             <div className="about-availability">
-              <h3>Currently Open To</h3>
+              <h3>{t.openTo}</h3>
               <div className="availability-tags">
                 {profile.openTo.map((item) => (
                   <span key={item} className="tag tag-available">
@@ -252,7 +291,7 @@ function App() {
             </div>
           </div>
 
-          <h3 className="subsection-title">Education</h3>
+          <h3 className="subsection-title">{t.education}</h3>
           <div className="education-grid">
             {education.map((edu, i) => (
               <Reveal key={edu.school} delay={i * 120}>
@@ -263,10 +302,12 @@ function App() {
                   </div>
                   <p className="card-role">{edu.degree}</p>
                   <p className="card-meta">{edu.detail}</p>
-                  {edu.gpa && <p className="card-meta">GPA: {edu.gpa} / 4.0</p>}
+                  {edu.gpa && <p className="card-meta">
+                      {t.gpa}: {edu.gpa} / 4.0
+                    </p>}
                   {edu.courses && (
                     <p className="card-courses">
-                      <strong>Core courses:</strong> {edu.courses}
+                      <strong>{t.coreCourses}</strong> {edu.courses}
                     </p>
                   )}
                 </div>
@@ -279,7 +320,7 @@ function App() {
       {/* By the Numbers */}
       <section id="numbers" className="section section-band">
         <div className="container">
-          <h2>By the Numbers</h2>
+          <h2>{t.numbers}</h2>
           <div className="stats-grid">
             {stats.map((stat, i) => (
               <Reveal key={stat.label} delay={i * 80}>
@@ -298,7 +339,7 @@ function App() {
       {/* Experience Section */}
       <section id="experience" className="section section-alt">
         <div className="container">
-          <h2>Experience</h2>
+          <h2>{t.experience}</h2>
           <div className="timeline">
             {experience.map((job) => (
               <Reveal key={job.company} className="timeline-item">
@@ -320,13 +361,15 @@ function App() {
             ))}
           </div>
 
-          <h3 className="subsection-title">Teaching & Mentoring</h3>
+          <h3 className="subsection-title">{t.teaching}</h3>
           <ul className="honors-list">
             {teaching.map((item) => (
               <li key={item.role} className="honor-item teaching-item">
                 <span className="teaching-date">{item.date}</span>
                 <span>
-                  <strong>{item.role}</strong>, {item.org}
+                  <strong>{item.role}</strong>
+                  {lang === 'zh' ? '，' : ', '}
+                  {item.org}
                   <br />
                   <span className="card-meta">{item.detail}</span>
                 </span>
@@ -339,7 +382,7 @@ function App() {
       {/* Research Section */}
       <section id="research" className="section">
         <div className="container">
-          <h2>Research & Projects</h2>
+          <h2>{t.research}</h2>
 
           <div className="filter-buttons">
             {researchFilters.map(({ id, label }) => (
@@ -381,7 +424,7 @@ function App() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {project.linkLabel ?? 'Learn more →'}
+                        {project.linkLabel ?? t.learnMore}
                       </a>
                     )}
                   </div>
@@ -390,7 +433,7 @@ function App() {
             ))}
           </div>
 
-          <h3 className="subsection-title">Publications & Working Papers</h3>
+          <h3 className="subsection-title">{t.publications}</h3>
           <ol className="pub-list">
             {publications.map((pub) => (
               <li key={pub.title} className="pub-item">
@@ -405,7 +448,7 @@ function App() {
                     <>
                       {' '}
                       <a href={pub.link} target="_blank" rel="noreferrer">
-                        Link →
+                        {t.pubLink}
                       </a>
                     </>
                   )}
@@ -419,7 +462,7 @@ function App() {
       {/* Skills Section */}
       <section id="skills" className="section section-alt">
         <div className="container">
-          <h2>Skills & Tools</h2>
+          <h2>{t.skills}</h2>
           <div className="skills-grid">
             {skills.map((skill, i) => (
               <Reveal key={skill.group} delay={(i % 3) * 100}>
@@ -449,7 +492,7 @@ function App() {
       {/* Honors Section */}
       <section id="honors" className="section">
         <div className="container">
-          <h2>Honors & Awards</h2>
+          <h2>{t.honors}</h2>
           <ul className="honors-list">
             {honors.map((honor) => (
               <li key={honor.title} className="honor-item">
@@ -459,7 +502,7 @@ function App() {
             ))}
           </ul>
 
-          <h3 className="subsection-title">Extension Study</h3>
+          <h3 className="subsection-title">{t.extension}</h3>
           <ul className="honors-list">
             {extensionStudy.map((item) => (
               <li key={item} className="honor-item">
@@ -474,18 +517,14 @@ function App() {
       {/* Contact Section */}
       <section id="contact" className="section section-alt">
         <div className="container">
-          <h2>Get In Touch</h2>
+          <h2>{t.getInTouch}</h2>
           <div className="contact-content">
-            <p>
-              I&apos;m looking for full-time data science and AI product roles starting January
-              2027. Feel free to reach out about opportunities, research collaborations, or just to
-              say hello!
-            </p>
+            <p>{t.contactIntro}</p>
 
             <form id="contact-form" className="contact-form" onSubmit={handleFormSubmit} noValidate>
               <div className="form-grid">
                 <div className="form-group">
-                  <label htmlFor="name">Name *</label>
+                  <label htmlFor="name">{t.name}</label>
                   <input
                     type="text"
                     id="name"
@@ -500,7 +539,7 @@ function App() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="email">Email *</label>
+                  <label htmlFor="email">{t.email}</label>
                   <input
                     type="email"
                     id="email"
@@ -515,7 +554,7 @@ function App() {
                 </div>
 
                 <div className="form-group form-group-full">
-                  <label htmlFor="subject">Subject</label>
+                  <label htmlFor="subject">{t.subject}</label>
                   <input
                     type="text"
                     id="subject"
@@ -526,7 +565,7 @@ function App() {
                 </div>
 
                 <div className="form-group form-group-full">
-                  <label htmlFor="message">Message *</label>
+                  <label htmlFor="message">{t.message}</label>
                   <textarea
                     id="message"
                     name="message"
@@ -542,11 +581,11 @@ function App() {
 
                 <div className="form-group form-group-full">
                   <button type="submit" className="btn btn-primary">
-                    Send Message
+                    {t.send}
                   </button>
                   {sent && (
                     <div className="success-message">
-                      Thanks for reaching out! Your email app should open now.
+                      {t.sent}
                     </div>
                   )}
                 </div>
@@ -562,7 +601,7 @@ function App() {
           <div className="footer-content">
             <HeartButton />
             <p>
-              &copy; {new Date().getFullYear()} {profile.name}. All rights reserved.
+              &copy; {new Date().getFullYear()} {profile.name}. {t.rights}
             </p>
             <div className="social-links">
               {socials.map(({ label, url }) => (
