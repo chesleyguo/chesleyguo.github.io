@@ -8,6 +8,8 @@ import {
   experience,
   research,
   researchFilters,
+  publications,
+  teaching,
   skills,
   honors,
   extensionStudy,
@@ -261,7 +263,12 @@ function App() {
                   </div>
                   <p className="card-role">{edu.degree}</p>
                   <p className="card-meta">{edu.detail}</p>
-                  <p className="card-meta">GPA: {edu.gpa} / 4.0</p>
+                  {edu.gpa && <p className="card-meta">GPA: {edu.gpa} / 4.0</p>}
+                  {edu.courses && (
+                    <p className="card-courses">
+                      <strong>Core courses:</strong> {edu.courses}
+                    </p>
+                  )}
                 </div>
               </Reveal>
             ))}
@@ -312,6 +319,20 @@ function App() {
               </Reveal>
             ))}
           </div>
+
+          <h3 className="subsection-title">Teaching & Mentoring</h3>
+          <ul className="honors-list">
+            {teaching.map((item) => (
+              <li key={item.role} className="honor-item teaching-item">
+                <span className="teaching-date">{item.date}</span>
+                <span>
+                  <strong>{item.role}</strong>, {item.org}
+                  <br />
+                  <span className="card-meta">{item.detail}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -360,7 +381,7 @@ function App() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        Learn more →
+                        {project.linkLabel ?? 'Learn more →'}
                       </a>
                     )}
                   </div>
@@ -368,6 +389,30 @@ function App() {
               </Reveal>
             ))}
           </div>
+
+          <h3 className="subsection-title">Publications & Working Papers</h3>
+          <ol className="pub-list">
+            {publications.map((pub) => (
+              <li key={pub.title} className="pub-item">
+                <span className="pub-status">{pub.status}</span>
+                <p>
+                  {pub.authors.split(/(Guo, J\.)/).map((part, i) =>
+                    part === 'Guo, J.' ? <strong key={i}>{part}</strong> : part
+                  )}{' '}
+                  {pub.year && `(${pub.year}). `}
+                  {pub.title} <em>{pub.venue}</em>.
+                  {pub.link && (
+                    <>
+                      {' '}
+                      <a href={pub.link} target="_blank" rel="noreferrer">
+                        Link →
+                      </a>
+                    </>
+                  )}
+                </p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

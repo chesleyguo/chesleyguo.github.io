@@ -894,6 +894,63 @@ a:hover {
     color: var(--primary-color);
 }
 
+/* Education courses */
+.card-courses {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Teaching & Mentoring */
+.teaching-date {
+    flex: 0 0 7.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Publications */
+.pub-list {
+    list-style: none;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.pub-item {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: baseline;
+    padding: 0.85rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    line-height: 1.55;
+}
+
+.pub-item p {
+    margin: 0;
+}
+
+.pub-status {
+    flex: 0 0 7.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--primary-color);
+}
+
+@media (max-width: 600px) {
+    .pub-item,
+    .teaching-item {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .pub-status,
+    .teaching-date {
+        flex-basis: auto;
+    }
+}
+
 /* Contact Form */
 .contact-content {
     max-width: 700px;

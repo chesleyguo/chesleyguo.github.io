@@ -6,21 +6,22 @@
 export const profile = {
   name: 'Jiayi (Chesley) Guo',
   shortName: 'Chesley Guo',
-  degree: 'MEng in Development Engineering',
+  degree: 'Master of Development Engineering',
   school: 'UC Berkeley',
   // cycled by the typewriter in the hero: "I love ___"
   passions: [
     'causal inference',
-    'evaluating LLMs',
+    'auditing LLMs',
+    'methane monitoring',
     'building AI products',
     'messy real-world data',
     'data for social good',
   ],
   tagline:
-    'I turn messy real-world data into evidence for better products and policies, from evaluating LLMs at TikTok to measuring the causal impact of speed cameras with the Oakland Department of Transportation.',
+    'I turn messy real-world data into evidence for better products and policies, from auditing how consumer LLMs handle retracted clinical trials to measuring the causal impact of speed cameras with the Oakland Department of Transportation.',
   bio: [
-    "I'm a Master of Engineering student in Development Engineering at UC Berkeley (AI/Data Analytics track), graduating in December 2026. Before Berkeley, I earned my B.S. in Information Sciences with a Data Science track from the University of Illinois Urbana-Champaign.",
-    'My work sits at the intersection of data science, AI, and product. I have built causal inference models on multi-year panel data, designed evaluation metrics for large language models, and run data-driven growth experiments for real-time communication products used by developers worldwide.',
+    "I'm a Master of Development Engineering (MDE) student at UC Berkeley on the AI/Data Analytics track and an NSF Research Trainee in Digital Transformation of Development, graduating in December 2026. Before Berkeley, I earned my B.S. in Information Sciences (Data Science track) at the University of Illinois Urbana-Champaign, after two years studying bioinformatics at Xi'an Jiaotong-Liverpool University.",
+    'My work sits at the intersection of data science, AI, and product. I audit how consumer LLMs handle retracted medical evidence, build simulation-based inference for landfill methane from airborne surveys, and model the causal impact of speed cameras on multi-year panel data. In industry, I designed LLM evaluation metrics at TikTok and ran data-driven experiments for real-time communication products at Tencent.',
     'I care about rigorous analysis that leads to real decisions, and I enjoy working across algorithm, product, and business teams to get things shipped.',
   ],
   location: 'Berkeley, CA',
@@ -47,28 +48,42 @@ export const navLinks = [
 
 // "By the Numbers" band; each value animates up from 0 when scrolled into view
 export const stats = [
+  { value: 3600, label: 'LLM responses audited for retracted clinical evidence' },
+  { value: 2641, label: 'Landfills audited in EPA’s LMOP register' },
   { value: 300, suffix: 'k+', label: 'UK Biobank participants analyzed' },
   { value: 93.3, decimals: 1, suffix: '%', label: 'Accuracy of my cough-acoustics model' },
   { value: 800, suffix: '+', label: 'Developers reached at Tencent RTC' },
+  { value: 5, label: 'Publications & working papers' },
   { value: 3, suffix: ' yrs', label: 'Of speed-camera panel data, modeled causally' },
-  { value: 4, label: 'Languages spoken (to varying degrees!)' },
   { value: 200, suffix: '+', label: 'Hours of volunteer service at UIUC' },
 ];
 
 export const education = [
   {
     school: 'University of California, Berkeley',
-    degree: 'Master of Engineering (MEng), Development Engineering',
-    detail: 'AI/Data Analytics Track · Certificate in Entrepreneurship & Technology',
+    degree: 'Master of Development Engineering (MDE)',
+    detail: 'AI/Data Analytics Track · NSF Research Traineeship (NRT) in Digital Transformation of Development',
+    courses:
+      'Experiments & Causal Inference; Research Design for Data and Analysis; Big Data & Development; Digital Transformation of Development; Front-End Web Architecture; Public Interest Technology Clinic',
     gpa: '3.82',
     date: 'Expected Dec 2026',
   },
   {
     school: 'University of Illinois Urbana-Champaign',
     degree: 'B.S. in Information Sciences',
-    detail: 'Data Science Track · Minor in Computer Science',
+    detail: 'Data Science Track · Edmund J. James Scholar',
+    courses:
+      'Data Visualization; Research Design in Information Sciences; Introduction to HCI; Ethics & Policy for Data Science; Data Structures; Advanced Software Design',
     gpa: '3.91',
-    date: 'Aug 2024',
+    date: '2023 – 2024',
+  },
+  {
+    school: 'Xi’an Jiaotong-Liverpool University',
+    degree: 'Undergraduate study in Bioinformatics (two years)',
+    detail: 'Transferred to UIUC · Suzhou, China',
+    courses:
+      'Cellular & Molecular Biology; Biochemistry; Evolution & Genetics; Algorithms; Databases; Java; Experimental Design; Statistics; Linear Algebra; Multivariable Calculus',
+    date: '2020 – 2022',
   },
 ];
 
@@ -106,7 +121,7 @@ export const experience = [
     date: 'Jun 2024 – Aug 2024',
     location: 'Shanghai, China',
     highlights: [
-      'Conducted literature research on LLM security and trustworthiness, supporting AI safety experiments.',
+      'Assisted with safety evaluations of large language models on the lab’s benchmarks (SALAD-Bench, MM-SafetyBench).',
       'Ran global content and social media for the ICML 2024 TiFA workshop (Trustworthy Multi-modal Foundation Models and AI Agents), iterating on strategy with engagement data.',
       'Built event operations for the Security Forum at the 2024 World Artificial Intelligence Conference (WAIC), hosting hundreds of attendees.',
     ],
@@ -128,6 +143,19 @@ export const experience = [
 // link: optional URL (paper, poster, repo); omit to hide the link
 export const research = [
   {
+    title: 'Retracted but Not Forgotten: Consumer LLMs & Retracted Clinical Trials',
+    org: 'Independent Research · Sole Author',
+    role: 'Manuscript submitted to Scientometrics',
+    date: 'Aug 2026 – Present',
+    category: 'llm',
+    featured: true,
+    description:
+      'A matched-control audit of whether ChatGPT, Gemini, and Claude present retracted clinical trials as valid evidence. I paired 100 retracted trials (Retraction Watch) with controls matched on topic, year, and design, then collected 3,600 responses across 3 question framings and 3 conditions, coded with an LLM coder validated against hand coding (κ = 0.96) and analyzed with GEE models. About 2/3 of answers presented retracted findings as valid, no different from controls; a retraction notice cut errors to ≤2%, while web search had mixed effects (GPT 66%→35%, Gemini 66%→82%).',
+    tags: ['LLM Audit', 'Matched Controls', 'GEE', 'Inter-rater Reliability', 'Python'],
+    link: 'https://github.com/chesleyguo/llm-retracted-clinical-evidence',
+    linkLabel: 'Code & data →',
+  },
+  {
     title: 'Causal Impact of Automated Speed Enforcement',
     org: 'UC Berkeley School of Information × Oakland DOT',
     role: 'Student Team Data Scientist · Prof. Alex Hughes',
@@ -139,14 +167,15 @@ export const research = [
     tags: ['Causal Inference', 'Diff-in-Diff', 'Panel Data', 'GCP', 'Python'],
   },
   {
-    title: 'AI/ML for U.S. Landfill Methane Emissions',
+    title: 'Selection-Aware Inference for Landfill Methane',
     org: 'UC Berkeley College of Engineering',
     role: 'Research Assistant · Prof. Alice Agogino',
     date: 'Jul 2026 – Present',
     category: 'ml',
+    featured: true,
     description:
-      'Using machine learning and sensor data to characterize landfill methane emission patterns, regional disparities, and health impacts, to support evidence-based mitigation policy.',
-    tags: ['Machine Learning', 'Sensor Data', 'AI for Social Good', 'Policy'],
+      'Developing a simulation-based inference (SBI) framework that estimates facility-level, time-averaged methane emissions with calibrated uncertainty from sparse airborne surveys (AVIRIS-NG, GAO; 107 U.S. landfills, 593 flight days). In simulation, averaging only detected overpasses overstates emissions by more than 2×; the framework corrects this by modeling non-detections, instrument detection limits, and survey selection. The pipeline reconciles plume observations with EPA GHGRP Subpart HH and LMOP records. Earlier, I audited EPA’s LMOP register (2,641 landfills) with leave-state-out validation, released a public explorer, and built a methane dashboard now used by Squishy Robotics.',
+    tags: ['Simulation-Based Inference', 'Remote Sensing', 'Uncertainty', 'EPA GHGRP', 'Dashboards'],
   },
   {
     title: 'Cough Acoustics for Disease Prognosis',
@@ -192,23 +221,89 @@ export const research = [
 
 export const researchFilters = [
   { id: 'all', label: 'All' },
+  { id: 'llm', label: 'LLM Evaluation' },
   { id: 'causal', label: 'Causal Inference' },
   { id: 'ml', label: 'Machine Learning' },
   { id: 'health', label: 'Health Data Science' },
   { id: 'hci', label: 'HCI & AI Products' },
 ];
 
+export const publications = [
+  {
+    authors: 'Guo, J.',
+    title:
+      'Retracted but not forgotten: A matched-control audit of how consumer large language models handle retracted clinical trials.',
+    venue: 'Submitted to Scientometrics',
+    status: 'Under review',
+  },
+  {
+    authors: 'Guo, J., & Hughes, A.',
+    title:
+      'The effect of automated speed enforcement on driving behavior: Evidence from Oakland’s speed safety camera pilot.',
+    venue: 'Working paper',
+    status: 'Working paper',
+  },
+  {
+    authors: 'Guo, J., & Agogino, A. M.',
+    title:
+      'Detected once, counted twice? Selection-aware simulation-based inference for landfill methane from sparse airborne surveys.',
+    venue: 'Working paper',
+    status: 'Working paper',
+  },
+  {
+    authors: 'Lu, H., Gu, L., Guo, J., Xu, L., et al.',
+    year: '2023',
+    title: 'Machine learning classification and recovery prediction of COVID-19 cough sounds.',
+    venue: 'SSRN (Preprints with The Lancet), 4439141',
+    status: 'Preprint',
+    link: 'https://ssrn.com/abstract=4439141',
+  },
+  {
+    authors: 'Shao, Y., Guo, J., Li, Z., Yan, W., & Zhu, Z.',
+    year: '2022',
+    title:
+      'Optimization of seaport companies’ D&A systems based on system dynamics and evaluation models.',
+    venue: 'Proceedings of SPIE, 12340, 1234003',
+    status: 'Published',
+    link: 'https://doi.org/10.1117/12.2652356',
+  },
+];
+
+export const teaching = [
+  {
+    role: 'Research Mentor',
+    org: 'Undergraduate Research Apprentice Program (URAP), UC Berkeley',
+    date: '2026 – Present',
+    detail: 'Mentoring 2 undergraduates on independent research projects in AI/ML for methane monitoring.',
+  },
+  {
+    role: 'Senior Mentor',
+    org: 'Xi’an Jiaotong-Liverpool University Affiliated School',
+    date: '2022 – 2023',
+    detail: 'Taught STEM enrichment courses to a class of ~50 high school students.',
+  },
+  {
+    role: 'Student Representative',
+    org: 'School of Science, Xi’an Jiaotong-Liverpool University',
+    date: '2021 – 2022',
+    detail: 'Mentored junior undergraduates on coursework and academic planning.',
+  },
+];
+
 export const skills = [
   {
     icon: '🐍',
     group: 'Programming & Data',
-    items: ['Python', 'Pandas', 'NumPy', 'scikit-learn', 'Statsmodels', 'SQL', 'R'],
+    items: ['Python', 'Pandas', 'NumPy', 'scikit-learn', 'Statsmodels', 'SQL', 'R', 'Java'],
   },
   {
     icon: '📈',
     group: 'Statistics & Machine Learning',
     items: [
       'Difference-in-Differences',
+      'Simulation-Based Inference',
+      'GEE / Clustered Models',
+      'Matched-Control Designs',
       'Regression Modeling',
       'PCA',
       'Survival Analysis',
@@ -222,6 +317,8 @@ export const skills = [
     group: 'AI & LLMs',
     items: [
       'LLM Evaluation Metrics',
+      'LLM Auditing',
+      'Safety Benchmarks',
       'Prompt Engineering',
       'Few-shot & Chain-of-Thought',
       'Data Annotation Management',
@@ -263,21 +360,23 @@ export const skills = [
 ];
 
 export const honors = [
-  { year: '2025', title: 'NSF Fellowship in Digital Transformation of Development (DToD)' },
+  { year: '2025', title: 'NSF Research Traineeship (NRT) in Digital Transformation of Development (DToD)' },
   { year: '2024', title: 'Phi Kappa Phi Honor Society' },
   { year: '2024', title: 'WeCu Scholar, UIUC (200+ hours of volunteer service)' },
   { year: '2023', title: 'MIT Policy Hackathon, Top 3 Finalist (Equitable Access to Healthcare)' },
-  { year: '2023', title: 'James Scholar Honor & Dean’s List, UIUC School of Information Sciences' },
+  { year: '2023', title: 'Edmund J. James Scholar (2023–2024) & Dean’s List (Fall 2023), UIUC' },
   { year: '2023', title: 'Kaggle Competition Expert' },
   { year: '2023', title: 'Google Advanced Data Analytics Certificate' },
   { year: '2022', title: 'Meritorious Winner, Interdisciplinary Contest in Modeling (ICM)' },
   { year: '2022', title: 'HarvardX Data Analysis for Life Sciences Professional Certificate' },
   { year: '2021', title: 'National Second Prize, China Undergraduate Mathematical Contest in Modeling' },
+  { year: '2020', title: 'District Third Prize, Asia-Pacific Mathematical Contest in Modeling' },
 ];
 
 export const extensionStudy = [
-  'MIT MicroMasters in Statistics and Data Science (2024–2025)',
+  'MITx MicroMasters in Statistics and Data Science: all four courses with verified certificates (2024)',
   'Oxford Machine Learning Summer School: ML × Health (2023)',
   'SJTU–THU–PKU Computer Science International Summer School (2023)',
+  'Duke Kunshan Healthcare Big Data Summer Program: Health Data Analytics, ML, Causal Inference & RCTs (2022)',
   'Tsinghua VSPH-GSS: Advancing Global Health in a Changing World (2022)',
 ];
