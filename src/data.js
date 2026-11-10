@@ -18,14 +18,18 @@ export const profile = {
   shortName: 'Chesley Guo',
   degree: 'Master of Development Engineering',
   school: 'UC Berkeley',
+  // Hero: research question (shown above the research interests)
+  researchQuestion:
+    'How can AI and information technologies deliver reliable knowledge to the people who need it most, rather than widen the gaps they already face?',
   researchInterests: ['AI for social good', 'information integrity', 'data for development'],
   tagline:
     'I turn messy real-world data into evidence for better decisions and policies, from auditing how consumer LLMs handle retracted clinical trials to measuring the causal impact of speed cameras with the Oakland Department of Transportation.',
   bio: [
-    'I’m a Master of Development Engineering student at UC Berkeley (AI/Data Analytics track, graduating December 2026) and an NSF NRT Fellow in Digital Transformation of Development. I study when data and AI can be trusted to inform real decisions: how chatbots handle retracted science, how much methane landfills emit when aircraft see them only a few times, and whether Oakland’s speed cameras change driving. Before Berkeley I earned a B.S. in Information Sciences at UIUC; in industry I designed LLM evaluation metrics at TikTok and ran A/B tests at Tencent.',
+    'I’m a Master of Development Engineering student at UC Berkeley (AI/Data Analytics track, graduating December 2026) and an NSF NRT Fellow in Digital Transformation of Development. I study when data and AI can be trusted to inform real decisions: how chatbots handle retracted science, how much methane landfills emit when aircraft see them only a few times, and whether Oakland’s speed cameras change driving. Before Berkeley I earned a B.S. in Information Sciences at UIUC; in industry I designed LLM evaluation metrics at TikTok and ran A/B tests at Tencent. At XJTLU, I founded the university’s first student Law Society, helping peers resolve more than 20 cases by turning institutional rules into steps they could act on.',
   ],
-  // About → Positionality: 2–4 sentences. The section stays hidden while this is empty.
-  positionality: '',
+  // About → Positionality. The section is hidden while this is empty.
+  positionality:
+    'I grew up with my grandparents in a rural village in China, where a barefoot doctor’s knowledge was all the medical care within reach, and I became the first in my family to attend university. Since then I have moved between rural and urban China, the humanities and the sciences, and AI product teams and public-interest work, and I have seen how often reliable knowledge fails to reach the people who need it most. That question is what brought me to development engineering. I also recognize that I now work from a well-resourced U.S. university and am an outsider to many of the communities my projects touch, from Oakland’s neighborhoods to communities living near landfills, so I try to design with communities and public partners rather than for them.',
   photo: 'assets/headshot.jpg', // in public/; the photo slot only appears once the file exists
   location: 'Berkeley, CA',
   email: 'chesleyguo@berkeley.edu',

@@ -103,6 +103,13 @@ function App() {
     landfillMap,
     publications,
   } = content[lang];
+  // Chinese fields left empty fall back to the English text (marked lang="en" for screen readers)
+  const fromEn = (key) =>
+    profile[key]
+      ? { text: profile[key] }
+      : { text: content.en.profile[key], lang: lang === 'en' ? undefined : 'en' };
+  const researchQuestion = fromEn('researchQuestion');
+  const positionality = fromEn('positionality');
   const validators = makeValidators(t);
   const [activeSection, setActiveSection] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -342,6 +349,11 @@ function App() {
             </p>
             <h1 className="hero-title">{profile.name}</h1>
             <p className="hero-next">{NEXT_LINE}</p>
+            {researchQuestion.text && (
+              <p className="hero-question" lang={researchQuestion.lang}>
+                {researchQuestion.text}
+              </p>
+            )}
             <p className="hero-interests">
               <span className="hero-interests-label">{t.interests}</span>
               <span className="hero-interests-list">
@@ -435,10 +447,10 @@ function App() {
             ))}
           </div>
 
-          {profile.positionality && (
+          {positionality.text && (
             <div className="prose positionality">
               <h3 className="subsection-title">{t.positionality}</h3>
-              <p>{profile.positionality}</p>
+              <p lang={positionality.lang}>{positionality.text}</p>
             </div>
           )}
 

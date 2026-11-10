@@ -342,6 +342,12 @@ a:hover {
     font: 500 22px/1.4 var(--f-sans);
 }
 
+.hero-question {
+    margin-bottom: 18px;
+    font: italic 400 21px/1.45 var(--f-serif);
+    color: var(--c-blue);
+}
+
 .hero-interests {
     margin-bottom: 22px;
     font-size: 18px;
