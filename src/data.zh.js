@@ -4,8 +4,8 @@
  */
 
 export const profile = {
-  name: '郭佳怡 (Chesley Guo)',
-  shortName: '郭佳怡',
+  name: '郭嘉翊 (Chesley Guo)',
+  shortName: '郭嘉翊',
   degree: '发展工程硕士',
   school: '加州大学伯克利分校',
   // 首屏打字机效果循环展示："我热爱 ___"
