@@ -5,7 +5,11 @@
 import * as en from './data';
 import * as zh from './data.zh';
 
-export const DEFAULT_LANG = 'zh';
+// First visit is always English (no browser-language detection). A language is remembered only
+// after the visitor clicks the toggle, under LANG_KEY. The old 'lang' key was written on every
+// visit by the previous site, so it is deliberately ignored.
+export const DEFAULT_LANG = 'en';
+export const LANG_KEY = 'lang-choice';
 
 // Served from public/, so it respects Vite's base path on GitHub Pages
 export const RESUME_URL = `${import.meta.env.BASE_URL}Jiayi_Guo_Resume_final.pdf`;
@@ -21,6 +25,9 @@ export const ui = {
     viewWork: 'View My Work',
     resume: 'CV (PDF)',
     getInTouch: 'Get In Touch',
+    contactDirect: 'Contact directly',
+    contactEmail: 'Email',
+    contactLocation: 'Location',
     glance: 'At a glance',
     glanceEducation: 'Education',
     glanceAffiliations: 'Affiliations',
@@ -43,7 +50,7 @@ export const ui = {
     publications: 'Publications & Working Papers',
     pubLink: 'Link',
     contactIntro: (next) =>
-      `${next} I’d love to hear about research collaborations, PhD programs, or just say hello.`,
+      `${next} Feel free to reach out about research collaborations or PhD programs, or just to say hello.`,
     name: 'Name *',
     email: 'Email *',
     subject: 'Subject',
@@ -64,6 +71,9 @@ export const ui = {
     viewWork: '查看我的研究',
     resume: '简历 (PDF)',
     getInTouch: '联系我',
+    contactDirect: '直接联系',
+    contactEmail: '邮箱',
+    contactLocation: '所在地',
     glance: '概览',
     glanceEducation: '教育背景',
     glanceAffiliations: '所属机构',

@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import './App.css';
-import { content, ui, DEFAULT_LANG, RESUME_URL } from './i18n';
+import { content, ui, DEFAULT_LANG, LANG_KEY, RESUME_URL } from './i18n';
 import RetractionChart from './figures/RetractionChart';
 import LandfillMap from './figures/LandfillMap';
 
@@ -21,7 +21,7 @@ const makeValidators = (t) => ({
 
 const readSavedLang = () => {
   try {
-    const saved = localStorage.getItem('lang');
+    const saved = localStorage.getItem(LANG_KEY);
     return Object.hasOwn(content, saved) ? saved : DEFAULT_LANG;
   } catch {
     return DEFAULT_LANG;
@@ -78,9 +78,9 @@ function Photo({ src, alt }) {
 }
 
 function Authors({ authors }) {
-  return authors.split(/(Guo, J\.)/).map((part, i) =>
-    part === 'Guo, J.' ? <strong key={i}>{part}</strong> : <span key={i}>{part}</span>
-  );
+  return authors
+    .split(/(Guo, J\.)/)
+    .map((part, i) => (part === 'Guo, J.' ? <strong key={i}>{part}</strong> : <span key={i}>{part}</span>));
 }
 
 function App() {
@@ -119,16 +119,20 @@ function App() {
   useEffect(() => {
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
     document.title = `${profile.name} | ${lang === 'zh' ? '个人主页' : 'Portfolio'}`;
-    try {
-      localStorage.setItem('lang', lang);
-    } catch {
-      // storage unavailable (private mode): language just won't persist
-    }
     setErrors({});
     setTouched({});
   }, [lang, profile.name]);
 
-  const toggleLang = () => setLang((l) => (l === 'zh' ? 'en' : 'zh'));
+  // Only a manual switch is remembered
+  const toggleLang = () => {
+    const next = lang === 'zh' ? 'en' : 'zh';
+    setLang(next);
+    try {
+      localStorage.setItem(LANG_KEY, next);
+    } catch {
+      // storage unavailable (private mode): the choice just won't persist
+    }
+  };
 
   // ============================================
   // SCROLL & ACTIVE NAV HIGHLIGHT
@@ -182,7 +186,7 @@ function App() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const nextErrors = Object.fromEntries(
-      Object.entries(validators).map(([field, validate]) => [field, validate(form[field])])
+      Object.entries(validators).map(([field, validate]) => [field, validate(form[field])]),
     );
     setErrors(nextErrors);
     setTouched({ name: true, email: true, message: true });
@@ -305,7 +309,13 @@ function App() {
           ))}
         </ul>
         <div className="nav-actions">
-          <button type="button" className="lang-toggle" onClick={toggleLang} aria-label={t.switchLabel} title={t.switchLabel}>
+          <button
+            type="button"
+            className="lang-toggle"
+            onClick={toggleLang}
+            aria-label={t.switchLabel}
+            title={t.switchLabel}
+          >
             {t.switchTo}
           </button>
           <button
@@ -527,14 +537,8 @@ function App() {
             ))}
           </div>
 
-          <div className="projects-featured">
-            {featuredResearch.map(renderProject)}
-          </div>
-          {otherResearch.length > 0 && (
-            <div className="projects-grid">
-              {otherResearch.map(renderProject)}
-            </div>
-          )}
+          <div className="projects-featured">{featuredResearch.map(renderProject)}</div>
+          {otherResearch.length > 0 && <div className="projects-grid">{otherResearch.map(renderProject)}</div>}
 
           <h3 className="subsection-title">{t.publications}</h3>
           <ol className="pub-list">
@@ -569,65 +573,103 @@ function App() {
       <section id="contact" className="section section-alt">
         <div className="container">
           <h2>{t.getInTouch}</h2>
-          <div className="contact-content">
-            <p className="contact-intro">{t.contactIntro(NEXT_LINE)}</p>
+          <div className="contact-layout">
+            <div className="contact-content">
+              <p className="contact-intro">{t.contactIntro(NEXT_LINE)}</p>
 
-            <form id="contact-form" className="contact-form" onSubmit={handleFormSubmit} noValidate>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label htmlFor="name">{t.name}</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    autoComplete="name"
-                    value={form.name}
-                    className={fieldClass('name')}
-                    onChange={handleInputChange}
-                  />
-                  {touched.name && errors.name && <span className="error-message">{errors.name}</span>}
-                </div>
+              <form id="contact-form" className="contact-form" onSubmit={handleFormSubmit} noValidate>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="name">{t.name}</label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      autoComplete="name"
+                      value={form.name}
+                      className={fieldClass('name')}
+                      onChange={handleInputChange}
+                    />
+                    {touched.name && errors.name && <span className="error-message">{errors.name}</span>}
+                  </div>
 
-                <div className="form-group">
-                  <label htmlFor="email">{t.email}</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    autoComplete="email"
-                    value={form.email}
-                    className={fieldClass('email')}
-                    onChange={handleInputChange}
-                  />
-                  {touched.email && errors.email && <span className="error-message">{errors.email}</span>}
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="email">{t.email}</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      autoComplete="email"
+                      value={form.email}
+                      className={fieldClass('email')}
+                      onChange={handleInputChange}
+                    />
+                    {touched.email && errors.email && <span className="error-message">{errors.email}</span>}
+                  </div>
 
-                <div className="form-group form-group-full">
-                  <label htmlFor="subject">{t.subject}</label>
-                  <input type="text" id="subject" name="subject" value={form.subject} onChange={handleInputChange} />
-                </div>
+                  <div className="form-group form-group-full">
+                    <label htmlFor="subject">{t.subject}</label>
+                    <input type="text" id="subject" name="subject" value={form.subject} onChange={handleInputChange} />
+                  </div>
 
-                <div className="form-group form-group-full">
-                  <label htmlFor="message">{t.message}</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows="5"
-                    value={form.message}
-                    className={fieldClass('message')}
-                    onChange={handleInputChange}
-                  ></textarea>
-                  {touched.message && errors.message && <span className="error-message">{errors.message}</span>}
-                </div>
+                  <div className="form-group form-group-full">
+                    <label htmlFor="message">{t.message}</label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows="5"
+                      value={form.message}
+                      className={fieldClass('message')}
+                      onChange={handleInputChange}
+                    ></textarea>
+                    {touched.message && errors.message && <span className="error-message">{errors.message}</span>}
+                  </div>
 
-                <div className="form-group form-group-full">
-                  <button type="submit" className="btn btn-primary">
-                    {t.send}
-                  </button>
-                  {sent && <div className="success-message">{t.sent}</div>}
+                  <div className="form-group form-group-full">
+                    <button type="submit" className="btn btn-primary">
+                      {t.send}
+                    </button>
+                    {sent && <div className="success-message">{t.sent}</div>}
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
+
+            <aside className="glance-card contact-card" aria-labelledby="contact-direct-title">
+              <h3 id="contact-direct-title" className="glance-title">
+                {t.contactDirect}
+              </h3>
+              <dl className="contact-list">
+                <div>
+                  <dt className="glance-label">{t.contactEmail}</dt>
+                  <dd>
+                    <a href={`mailto:${profile.email}`} className="text-link">
+                      {profile.email}
+                    </a>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="glance-label">LinkedIn</dt>
+                  <dd>
+                    <a href={profile.linkedin} className="text-link" {...external}>
+                      linkedin.com/in/jg1023
+                    </a>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="glance-label">{t.contactLocation}</dt>
+                  <dd>{profile.location}</dd>
+                </div>
+                <div>
+                  <dt className="glance-label">CV</dt>
+                  <dd>
+                    <a href={RESUME_URL} className="text-link" {...external}>
+                      {t.resume} <span aria-hidden="true">↗</span>
+                    </a>
+                  </dd>
+                </div>
+              </dl>
+            </aside>
           </div>
         </div>
       </section>
