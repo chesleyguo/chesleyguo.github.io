@@ -1,35 +1,61 @@
 /**
- * 中文版网站内容，结构与 ./data.js 保持一致。
- * 修改英文版内容时，请同步更新本文件。
+ * 中文版网站内容，结构与 ./data.js 保持一致。修改英文版时请同步更新本文件。
+ * 从首页移除的板块（数据一览、技能、拓展学习、完整荣誉列表、求职意向、旧版长项目描述）
+ * 原样保存在 ./archive/main-data.zh.js。
  */
+
+// 首页、关于我、联系三处共用的一句定位。拿到录取后可改为例如
+//   '[大学] 信息科学博士新生 · 2027 年秋季入学'
+export const NEXT_LINE = '正在申请 2027 年秋季入学的信息科学博士项目。';
 
 export const profile = {
   name: '郭嘉翊 (Chesley Guo)',
   shortName: '郭嘉翊',
   degree: '发展工程硕士',
   school: '加州大学伯克利分校',
-  // 首屏打字机效果循环展示："我热爱 ___"
-  passions: [
-    '因果推断',
-    '审计大语言模型',
-    '甲烷监测',
-    '打造 AI 产品',
-    '处理真实世界的复杂数据',
-    '用数据推动社会公益',
-  ],
+  researchInterests: ['AI 向善', '信息可信度', '数据驱动的发展'],
   tagline:
-    '我把真实世界中纷繁复杂的数据转化为改进产品与政策的证据：从审计消费级大语言模型如何对待已撤稿的临床试验，到与奥克兰交通局合作评估测速摄像头的因果效应。',
+    '我把真实世界中纷繁复杂的数据转化为改进决策与政策的证据：从审计消费级大语言模型如何对待已撤稿的临床试验，到与奥克兰交通局合作评估测速摄像头的因果效应。',
   bio: [
-    '我目前在加州大学伯克利分校攻读发展工程硕士（MDE，AI/数据分析方向），同时是美国国家科学基金会（NSF）“发展的数字化转型”研究培训项目（NRT）学员，预计 2026 年 12 月毕业。此前，我在西交利物浦大学学习两年生物信息学，之后转学至伊利诺伊大学厄巴纳-香槟分校，获得信息科学学士学位（数据科学方向）。',
-    '我的工作横跨数据科学、人工智能与产品。我审计消费级大语言模型如何处理已撤稿的医学证据，为基于稀疏航测数据的填埋场甲烷排放构建基于模拟的推断框架，并利用多年面板数据评估测速摄像头的因果效应。在业界，我曾在 TikTok 设计大模型评测指标，并在腾讯为实时音视频产品开展数据驱动的实验。',
-    '我重视能真正推动决策的严谨分析，也乐于和算法、产品与业务团队协作，把事情落地。',
+    '我目前在加州大学伯克利分校攻读发展工程硕士（AI/数据分析方向，2026 年 12 月毕业），同时是 NSF“发展的数字化转型”研究培训项目（NRT）Fellow。我关心数据和 AI 在什么情况下值得信赖、可以用来支撑真实决策：聊天机器人如何对待已撤稿的科学证据，飞机只能飞过几次时填埋场到底排放多少甲烷，以及奥克兰的测速摄像头能否改变驾驶行为。此前我在 UIUC 获得信息科学学士学位，并曾在 TikTok 设计大模型评测指标、在腾讯开展 A/B 测试。',
   ],
+  // 关于我 → 立场与背景（Positionality）：2–4 句。留空时整节不显示。
+  positionality: '',
+  photo: 'assets/headshot.jpg',
   location: '美国加州伯克利',
   email: 'chesleyguo@berkeley.edu',
   linkedin: 'https://www.linkedin.com/in/jg1023',
-  openTo: ['数据科学家', 'AI 产品经理', '研究与分析'],
-  availability: '可于 2027 年 1 月起入职全职岗位',
 };
+
+export const glance = {
+  education: [
+    { degree: '发展工程硕士，加州大学伯克利分校', year: '2026' },
+    { degree: '信息科学学士，UIUC', year: '2024' },
+    { degree: '生物信息学，西交利物浦大学', year: '2020–22' },
+  ],
+  affiliations: ['NSF NRT Fellow', 'BEST 实验室，Alice Agogino 教授', '伯克利信息学院 × 奥克兰交通局'],
+};
+
+export const directions = [
+  {
+    icon: 'chat',
+    title: '大模型审计',
+    text: '聊天机器人还会引用已撤稿的临床试验吗？约 2/3 的回答会；提示撤稿信息后降至 ≤2%。',
+    project: 'retracted',
+  },
+  {
+    icon: 'policy',
+    title: '政策的因果评估',
+    text: '奥克兰的 18 台测速摄像头能改变驾驶行为吗？与奥克兰交通局合作的断点回归研究。',
+    project: 'oakland',
+  },
+  {
+    icon: 'environment',
+    title: '环境数据',
+    text: '填埋场到底排放多少甲烷？模拟中，只对检出的羽流取平均会把只飞过一次的设施高估 41%；我们的方法把偏差降到 −3%。',
+    project: 'methane',
+  },
+];
 
 export const socials = [
   { label: 'LinkedIn', url: profile.linkedin },
@@ -41,29 +67,14 @@ export const navLinks = [
   { id: 'about', label: '关于我' },
   { id: 'experience', label: '经历' },
   { id: 'research', label: '研究' },
-  { id: 'skills', label: '技能' },
-  { id: 'honors', label: '荣誉' },
   { id: 'contact', label: '联系' },
-];
-
-export const stats = [
-  { value: 3600, label: '条大模型回答，用于审计撤稿临床证据' },
-  { value: 2641, label: '个填埋场，审计自美国环保署 LMOP 名录' },
-  { value: 300, suffix: 'k+', label: '名 UK Biobank 参与者数据分析' },
-  { value: 93.3, decimals: 1, suffix: '%', label: '咳嗽声学模型准确率' },
-  { value: 800, suffix: '+', label: '位开发者，触达自腾讯 RTC 推广' },
-  { value: 5, label: '篇论文与工作论文' },
-  { value: 3, suffix: ' 年', label: '测速摄像头面板数据的因果建模' },
-  { value: 200, suffix: '+', label: '小时志愿服务（UIUC）' },
 ];
 
 export const education = [
   {
     school: '加州大学伯克利分校',
     degree: '发展工程硕士（MDE）',
-    detail: 'AI/数据分析方向 · NSF“发展的数字化转型”研究培训项目（NRT）学员',
-    courses:
-      '实验与因果推断；数据分析的研究设计与应用；大数据与发展；发展的数字化转型；前端 Web 架构；公共利益技术诊所',
+    detail: 'AI/数据分析方向 · NSF“发展的数字化转型”NRT Fellow',
     gpa: '3.82',
     date: '预计 2026 年 12 月毕业',
   },
@@ -71,18 +82,23 @@ export const education = [
     school: '伊利诺伊大学厄巴纳-香槟分校',
     degree: '信息科学学士',
     detail: '数据科学方向 · Edmund J. James 学者',
-    courses: '数据可视化；信息科学研究设计；人机交互导论；数据科学伦理与政策；数据结构；高级软件设计',
     gpa: '3.91',
     date: '2023 – 2024',
   },
   {
     school: '西交利物浦大学',
-    degree: '生物信息学本科（两年）',
-    detail: '后转学至 UIUC · 中国苏州',
-    courses:
-      '细胞与分子生物学；生物化学；进化与遗传学；算法；数据库；Java 编程；实验设计；统计学；线性代数；多元微积分',
+    degree: '生物信息学（两年，后转学至 UIUC）',
+    detail: '中国苏州',
     date: '2020 – 2022',
   },
+];
+
+export const honors = [
+  { year: '2025', title: 'NSF“发展的数字化转型”研究培训项目（NRT）Fellow' },
+  { year: '2024', title: 'Phi Kappa Phi 荣誉学会' },
+  { year: '2023', title: 'UIUC Edmund J. James 学者及院长嘉许名单' },
+  { year: '2023', title: 'MIT 政策黑客松前三名（医疗公平可及赛道）' },
+  { year: '2021', title: '全国大学生数学建模竞赛国家二等奖' },
 ];
 
 export const experience = [
@@ -93,10 +109,8 @@ export const experience = [
     date: '2025 年 5 月 – 2025 年 8 月',
     location: '中国上海',
     highlights: [
-      '基于埋点与用户行为数据，推动 RTC 产品矩阵（对话式 AI、通话、会议、直播、游戏语音、美颜 AR）的功能优化。',
-      '负责 LinkedIn 与 TikTok 的海外营销与本地化，产出技术博客、宣传视频和线上研讨会，触达 800+ 开发者与初创团队。',
-      '搭建 100+ KOL 的联盟推广计划，获得 2.5k+ 曝光，并通过效果分成合作提升转化。',
-      '设计 A/B 测试与内容生态图谱，比较不同内容策略，用数据优化营销活动。',
+      '基于埋点与用户行为数据，推动 RTC 产品矩阵（对话式 AI、通话、会议、直播）的功能优化。',
+      '设计 A/B 测试比较内容策略；开发者营销触达 800+ 开发者与初创团队。',
     ],
   },
   {
@@ -106,10 +120,8 @@ export const experience = [
     date: '2024 年 11 月 – 2025 年 1 月',
     location: '中国上海',
     highlights: [
-      '优化自研视频理解与文本生成大模型，提升描述准确率并减少幻觉。',
-      '撰写 PRD，定义大模型核心能力（视频打标、摘要、问答），并设计准确性、语义相关性与逻辑推理等评测指标。',
-      '协调算法工程师、数据标注供应商与基础设施团队，推进模型训练与上线。',
-      '基于用户场景与反馈搭建指标看板，指导模型迭代。',
+      '为自研视频理解与文本生成大模型撰写 PRD，并设计准确性、语义相关性与逻辑推理等评测指标。',
+      '协调算法工程师、数据标注供应商与基础设施团队，推进模型从训练到上线。',
     ],
   },
   {
@@ -120,8 +132,7 @@ export const experience = [
     location: '中国上海',
     highlights: [
       '参与实验室基准（SALAD-Bench、MM-SafetyBench）上的大语言模型安全评测。',
-      '负责 ICML 2024 TiFA 研讨会（可信多模态基础模型与 AI 智能体）的全球内容与社媒运营，依据互动数据迭代策略。',
-      '支持 2024 世界人工智能大会（WAIC）安全论坛的会务运营，服务数百名参会者。',
+      '负责 ICML 2024 TiFA 研讨会的内容运营，以及 2024 世界人工智能大会安全论坛的会务。',
     ],
   },
   {
@@ -130,139 +141,7 @@ export const experience = [
     team: 'FP&A',
     date: '2023 年 7 月 – 2023 年 8 月',
     location: '中国常州',
-    highlights: [
-      '构建用于预测与预算的财务模型，提升准确性与效率。',
-      '开展竞品与市场分析，并直接向高层管理者汇报增长建议。',
-    ],
-  },
-];
-
-export const research = [
-  {
-    title: '撤稿而未被遗忘：消费级大模型与已撤稿临床试验',
-    org: '独立研究 · 独立作者',
-    role: '论文已投稿至 Scientometrics',
-    date: '2026 年 8 月 – 至今',
-    category: 'llm',
-    featured: true,
-    description:
-      '一项匹配对照审计，检验 ChatGPT、Gemini 和 Claude 是否会把已撤稿的临床试验当作有效证据。我将 100 项撤稿试验（来自 Retraction Watch）与在主题、年份和设计上匹配的未撤稿试验配对，在 3 种提问方式 × 3 种条件下收集 3,600 条回答，用经人工编码验证的 LLM 编码器（κ = 0.96）进行编码，并用 GEE 模型分析。约 2/3 的回答把撤稿结论当作有效，与对照组无显著差异；提示撤稿信息可将错误率降至 ≤2%，而联网搜索效果不一（GPT 66%→35%，Gemini 66%→82%）。',
-    tags: ['大模型审计', '匹配对照', 'GEE', '编码一致性', 'Python'],
-    link: 'https://github.com/chesleyguo/llm-retracted-clinical-evidence',
-    linkLabel: '代码与数据 →',
-  },
-  {
-    title: '自动测速执法的因果效应评估',
-    org: '伯克利信息学院 × 奥克兰交通局（OakDOT）',
-    role: '学生团队数据科学家 · 导师 Alex Hughes 教授',
-    date: '2026 年 8 月 – 至今',
-    category: 'causal',
-    featured: true,
-    description:
-      '基于 3 年高频车速与违章数据构建双重差分模型，识别测速摄像头对车速分布、严重超速及重复违章行为的影响。所有工作均在符合 CPRA/CCPA 的安全 GCP 环境中进行。',
-    tags: ['因果推断', '双重差分', '面板数据', 'GCP', 'Python'],
-  },
-  {
-    title: '考虑选择偏差的填埋场甲烷排放推断',
-    org: '伯克利工学院',
-    role: '研究助理 · 导师 Alice Agogino 教授',
-    date: '2026 年 7 月 – 至今',
-    category: 'ml',
-    featured: true,
-    description:
-      '构建基于模拟的推断（SBI）框架，利用稀疏航测数据（AVIRIS-NG、GAO；107 个美国填埋场、593 个飞行日）估计设施级时间平均甲烷排放，并给出校准的不确定性。模拟显示，对只飞过一次的设施，只对检测到的过境取平均会把排放高估约 41%；该框架通过建模未检出、仪器检测限和调查选择，把这一偏差降到约 −3%。数据管线将羽流观测与美国环保署 GHGRP Subpart HH 及 LMOP 记录对齐。此前，我用留一州验证审计了 LMOP 名录（2,641 个填埋场）并发布了公开交互工具，还搭建了现已被合作初创公司 Squishy Robotics 产品团队使用的甲烷看板。',
-    tags: ['基于模拟的推断', '遥感', '不确定性量化', 'EPA GHGRP', '数据看板'],
-  },
-  {
-    title: '基于咳嗽声学的疾病预后预测',
-    org: '上海市多维度信息处理重点实验室',
-    role: '研究助理 · 导师陈建刚教授（华东师范大学）',
-    date: '2021 年 10 月 – 2022 年 12 月',
-    category: 'ml',
-    description:
-      '在三甲医院采集 78 名患者的咳嗽录音，通过语音活动检测、降噪和数据增强将数据集扩展至 535 条样本。XGBoost + 随机森林集成模型准确率达 93.3%，康复时间预测误差在 3 天以内。',
-    tags: ['音频机器学习', 'XGBoost', '随机森林', 'librosa', 'SciPy'],
-  },
-  {
-    title: '肌少症与衰老的代谢组学研究',
-    org: '昆山杜克大学全球健康研究中心',
-    role: '健康研究数据分析实习生 · 导师吴晨凯教授',
-    date: '2022 年 3 月 – 2022 年 8 月',
-    category: 'health',
-    description:
-      '利用 PCA 与多项逻辑回归分析 UK Biobank（30 万+ 参与者）中的 249 种代谢物，研究代谢物、肌少症与衰老之间的关系，并构建 Cox 比例风险模型预测死亡风险。',
-    tags: ['UK Biobank', 'PCA', '逻辑回归', '生存分析', 'R'],
-  },
-  {
-    title: '“一带一路”卫生合作分析',
-    org: '清华大学万科公共卫生与健康学院',
-    role: '研究助理 · 导师唐昆教授',
-    date: '2022 年 11 月 – 2023 年 3 月',
-    category: 'health',
-    description:
-      '清洗并挖掘 2016 年以来与“一带一路”国家签订的医疗合作备忘录文本，并与 IHME 疾病负担（DALYs）数据关联，支持团队的多国评估模型。',
-    tags: ['文本挖掘', '关键词提取', '全球健康', 'IHME DALYs'],
-  },
-  {
-    title: '面向跨文化学术检索的 AI 聊天机器人',
-    org: 'UIUC 信息科学学院',
-    role: '研究助理 · 导师黄云教授',
-    date: '2024 年 1 月 – 2024 年 5 月',
-    category: 'hci',
-    description:
-      '梳理学术信息检索中的跨文化人机交互研究，参与设计一款支持多语言、上下文感知查询并接入数字图书馆 API 的 AI 聊天机器人。',
-    tags: ['人机交互', '对话式 AI', '需求设计', '用户研究'],
-  },
-];
-
-export const researchFilters = [
-  { id: 'all', label: '全部' },
-  { id: 'llm', label: '大模型评估' },
-  { id: 'causal', label: '因果推断' },
-  { id: 'ml', label: '机器学习' },
-  { id: 'health', label: '健康数据科学' },
-  { id: 'hci', label: '人机交互与 AI 产品' },
-];
-
-// 论文条目保留英文原始引用格式
-export const publications = [
-  {
-    authors: 'Guo, J.',
-    title:
-      'Retracted but not forgotten: A matched-control audit of how consumer large language models handle retracted clinical trials.',
-    venue: 'Submitted to Scientometrics',
-    status: '审稿中',
-  },
-  {
-    authors: 'Guo, J., & Hughes, A.',
-    title:
-      'The effect of automated speed enforcement on driving behavior: Evidence from Oakland’s speed safety camera pilot.',
-    venue: 'Working paper',
-    status: '工作论文',
-  },
-  {
-    authors: 'Guo, J., & Agogino, A. M.',
-    title:
-      'Detected once, counted twice? Selection-aware simulation-based inference for landfill methane from sparse airborne surveys.',
-    venue: 'Working paper',
-    status: '工作论文',
-  },
-  {
-    authors: 'Lu, H., Gu, L., Guo, J., Xu, L., et al.',
-    year: '2023',
-    title: 'Machine learning classification and recovery prediction of COVID-19 cough sounds.',
-    venue: 'SSRN (Preprints with The Lancet), 4439141',
-    status: '预印本',
-    link: 'https://ssrn.com/abstract=4439141',
-  },
-  {
-    authors: 'Shao, Y., Guo, J., Li, Z., Yan, W., & Zhu, Z.',
-    year: '2022',
-    title:
-      'Optimization of seaport companies’ D&A systems based on system dynamics and evaluation models.',
-    venue: 'Proceedings of SPIE, 12340, 1234003',
-    status: '已发表',
-    link: 'https://doi.org/10.1117/12.2652356',
+    highlights: ['构建预测与预算财务模型，并向高层管理者汇报竞品分析。'],
   },
 ];
 
@@ -287,86 +166,171 @@ export const teaching = [
   },
 ];
 
-export const skills = [
+export const research = [
   {
-    icon: '🐍',
-    group: '编程与数据',
-    items: ['Python', 'Pandas', 'NumPy', 'scikit-learn', 'Statsmodels', 'SQL', 'R', 'Java'],
+    id: 'retracted',
+    title: '撤稿而未被遗忘：消费级大模型与已撤稿临床试验',
+    org: '独立研究 · 独立作者',
+    role: '已投稿至 Scientometrics',
+    date: '2026 年 8 月 – 至今',
+    category: 'llm',
+    featured: true,
+    question: 'ChatGPT、Gemini 和 Claude 还会把已撤稿的临床试验当作有效证据吗？',
+    method:
+      '100 项来自 Retraction Watch 的撤稿试验，每项按主题、年份和设计匹配一项对照；共 3,600 条回答（首轮 3,000 条加 600 条重复运行），由与人工编码一致性达 κ = 0.96（几乎完全一致）的 LLM 编码器编码。',
+    finding:
+      '约 2/3 的回答把撤稿试验当作有效，与对照组没有差异。提示撤稿信息后降至 ≤2%；联网搜索效果不一（ChatGPT 66% → 35%，Gemini 66% → 82%）。',
+    figure: 'retraction-chart',
+    tags: ['大模型审计', '匹配对照', 'GEE', '编码者一致性', 'Python'],
+    link: 'https://github.com/chesleyguo/llm-retracted-clinical-evidence',
+    linkLabel: '代码与数据',
   },
   {
-    icon: '📈',
-    group: '统计与机器学习',
-    items: [
-      '双重差分',
-      '基于模拟的推断',
-      'GEE / 聚类模型',
-      '匹配对照设计',
-      '回归建模',
-      'PCA',
-      '生存分析',
-      'XGBoost',
-      '随机森林',
-      '特征工程',
-    ],
+    id: 'methane',
+    title: '考虑选择偏差的填埋场甲烷排放推断',
+    org: '发展工程硕士毕业项目 · 伯克利 BEST 实验室',
+    role: '导师：Alice Agogino 教授',
+    date: '2026 年 7 月 – 至今',
+    category: 'ml',
+    featured: true,
+    question: '飞机每个填埋场只飞过几天、且只报告捕捉到的羽流时，美国填埋场到底排放多少甲烷？',
+    method:
+      '基于模拟的推断，建模间歇性排放、仪器检测限和“检出才入册”的选择规则，并用精确 MCMC 校验；数据为 107 个填埋场的 593 个飞行日（平均每个设施 5–6 天）。',
+    finding:
+      '模拟中，对只飞过一次的设施，只对检出过境取平均会高估 41%；我们的方法把偏差降到 −3%，90% 区间覆盖真值的比例为 90–91%。',
+    also: '此前，我审计了美国环保署 LMOP 数据库中的 2,641 个填埋场，并搭建了现已被 Squishy Robotics 使用的甲烷看板。',
+    figure: 'landfill-map',
+    tags: ['基于模拟的推断', '遥感', '不确定性量化', 'EPA GHGRP'],
   },
   {
-    icon: '🤖',
-    group: 'AI 与大模型',
-    items: [
-      '大模型评测指标',
-      '大模型审计',
-      '安全基准评测',
-      '提示工程',
-      '少样本与思维链',
-      '数据标注管理',
-      'Claude Code',
-      'Cursor',
-      'GitHub Copilot',
-    ],
+    id: 'oakland',
+    title: '自动测速执法的因果效应评估',
+    org: '伯克利信息学院 × 奥克兰交通局（OakDOT）',
+    role: '学生团队数据科学家 · Alex Hughes 教授',
+    date: '2026 年 8 月 – 至今',
+    category: 'causal',
+    featured: true,
+    question: '奥克兰的 18 台测速安全摄像头能改变人们的驾驶行为吗？',
+    method:
+      '在两个上线节点做时间断点回归（RDiT），区分摄像头警告的效应与罚款的额外效应；使用三年高频车速与违章数据，在符合 CPRA/CCPA 的安全 GCP 环境中进行。',
+    finding: '',
+    status: '进行中，预计 2026 年 12 月出结果。',
+    tags: ['因果推断', '时间断点回归', '面板数据', 'GCP', 'Python'],
   },
   {
-    icon: '📊',
-    group: '可视化与工具',
-    items: ['Tableau', 'Power BI', 'Excel', '数据看板', 'Google Cloud Platform'],
+    id: 'cough',
+    title: '基于咳嗽声学的疾病预后预测',
+    org: '上海市多维度信息处理重点实验室',
+    role: '研究助理 · 陈建刚教授（华东师范大学）',
+    date: '2021 年 10 月 – 2022 年 12 月',
+    category: 'ml',
+    question: '咳嗽录音能否用于识别新冠并预测患者多久康复？',
+    method: '采集 78 名住院患者的录音，经语音活动检测、降噪和数据增强扩展到 535 条样本；使用 XGBoost + 随机森林集成模型。',
+    finding: '分类准确率 93.3%；康复时间预测误差在 3 天以内。',
+    tags: ['音频机器学习', 'XGBoost', '随机森林', 'librosa'],
   },
   {
-    icon: '🧭',
-    group: '产品与增长',
-    items: ['PRD 与需求文档', '埋点设计', '用户画像', 'A/B 测试', '竞品分析', '本地化'],
+    id: 'metabolomics',
+    title: '肌少症与衰老的代谢组学研究',
+    org: '昆山杜克大学全球健康研究中心',
+    role: '健康研究数据分析实习生 · 吴晨凯教授',
+    date: '2022 年 3 月 – 2022 年 8 月',
+    category: 'health',
+    question: '血液代谢物与肌少症、衰老和死亡风险有什么关系？',
+    method: '分析 UK Biobank（30 万+ 参与者）中的 249 种代谢物，使用 PCA 与多项逻辑回归，再用 Cox 比例风险模型预测死亡风险。',
+    finding: '',
+    tags: ['UK Biobank', 'PCA', '生存分析', 'R'],
   },
   {
-    icon: '🎨',
-    group: '设计与语言',
-    items: [
-      'Photoshop',
-      'Illustrator',
-      'Premiere Pro',
-      '中文（母语）',
-      '英语（流利）',
-      '日语（基础）',
-      '西班牙语（基础）',
-    ],
+    id: 'belt-road',
+    title: '“一带一路”卫生合作分析',
+    org: '清华大学万科公共卫生与健康学院',
+    role: '研究助理 · 唐昆教授',
+    date: '2022 年 11 月 – 2023 年 3 月',
+    category: 'health',
+    question: '与“一带一路”国家的卫生合作是否与当地疾病负担相匹配？',
+    method: '清洗并挖掘 2016 年以来签订的医疗合作备忘录，与 IHME 疾病负担（DALYs）数据关联，构建多国评估模型。',
+    finding: '',
+    tags: ['文本挖掘', '全球健康', 'IHME DALYs'],
+  },
+  {
+    id: 'chatbot',
+    title: '面向跨文化学术检索的 AI 聊天机器人',
+    org: 'UIUC 信息科学学院',
+    role: '研究助理 · 黄云教授',
+    date: '2024 年 1 月 – 2024 年 5 月',
+    category: 'hci',
+    question: '聊天机器人如何帮助学生跨语言、跨文化检索学术文献？',
+    method: '梳理学术信息检索中的跨文化人机交互研究，参与设计一款支持多语言、上下文感知查询并接入数字图书馆 API 的聊天机器人。',
+    finding: '',
+    tags: ['人机交互', '对话式 AI', '用户研究'],
   },
 ];
 
-export const honors = [
-  { year: '2025', title: '美国国家科学基金会（NSF）“发展的数字化转型”研究培训项目（NRT）' },
-  { year: '2024', title: 'Phi Kappa Phi 荣誉学会' },
-  { year: '2024', title: 'UIUC WeCU 学者（200+ 小时志愿服务）' },
-  { year: '2023', title: 'MIT 政策黑客松前三名（医疗公平可及赛道）' },
-  { year: '2023', title: 'UIUC Edmund J. James 学者（2023–2024）及院长嘉许名单（2023 秋）' },
-  { year: '2023', title: 'Kaggle 竞赛专家（Competition Expert）' },
-  { year: '2023', title: 'Google 高级数据分析证书' },
-  { year: '2022', title: '美国大学生数学建模竞赛（ICM）Meritorious Winner' },
-  { year: '2022', title: 'HarvardX 生命科学数据分析专业证书' },
-  { year: '2021', title: '全国大学生数学建模竞赛国家二等奖' },
-  { year: '2020', title: '亚太地区大学生数学建模竞赛（APMCM）区域三等奖' },
+export const researchFilters = [
+  { id: 'all', label: '全部' },
+  { id: 'llm', label: '大模型评估' },
+  { id: 'causal', label: '因果推断' },
+  { id: 'ml', label: '机器学习' },
+  { id: 'health', label: '健康数据科学' },
+  { id: 'hci', label: '人机交互与 AI 产品' },
 ];
 
-export const extensionStudy = [
-  'MITx 统计与数据科学 MicroMasters：完成全部四门课程并获认证证书（2024）',
-  '牛津机器学习暑期学校：机器学习 × 健康方向（2023）',
-  '上海交大–清华–北大计算机科学国际暑期学校（2023）',
-  '昆山杜克大学医疗大数据暑期项目：健康数据分析、机器学习、因果推断与随机对照试验（2022）',
-  '清华大学万科公共卫生与健康学院暑期学校：变化世界中的全球健康（2022）',
+export const retractionChart = {
+  aria: '柱状图：把已撤稿试验当作有效的回答比例。ChatGPT：默认 66%，联网搜索 35%，提示撤稿 2% 及以下。Gemini：默认 66%，联网搜索 82%，提示撤稿 2% 及以下。',
+  title: '把已撤稿试验当作有效的回答比例（%）',
+  series: ['默认', '联网搜索', '提示撤稿'],
+  groups: [
+    { name: 'ChatGPT', values: [66, 35, 2], labels: ['66%', '35%', '≤2%'] },
+    { name: 'Gemini', values: [66, 82, 2], labels: ['66%', '82%', '≤2%'] },
+  ],
+  caption: '按模型和条件统计、把已撤稿试验当作有效的回答比例。数据：本研究。',
+};
+
+export const landfillMap = {
+  aria: (n, hollow) =>
+    `美国 ${n} 个被航测的填埋场地图。圆点颜色和大小表示过境平均甲烷排放；其中 ${hollow} 个检出但未定量，画成空心圆。`,
+  measure: '过境平均排放，kg CH₄/h',
+  unit: 'kg CH₄/h',
+  hollow: '检出但未定量',
+  caption: '航测覆盖的 107 个填埋场，圆点大小和颜色表示过境平均甲烷排放。数据：Cusworth et al. (2024), Science 383:1499。',
+};
+
+// 论文条目保留英文原始引用格式
+export const publications = [
+  {
+    authors: 'Guo, J.',
+    title:
+      'Retracted but not forgotten: A matched-control audit of how consumer large language models handle retracted clinical trials.',
+    venue: 'Scientometrics (submitted)',
+    status: '审稿中',
+  },
+  {
+    authors: 'Guo, J., & Hughes, A.',
+    title:
+      'The effect of automated speed enforcement on driving behavior: Evidence from Oakland’s speed safety camera pilot.',
+    status: '工作论文',
+  },
+  {
+    authors: 'Guo, J., & Agogino, A. M.',
+    title:
+      'Detected once, counted twice? Selection-aware simulation-based inference for landfill methane from sparse airborne surveys.',
+    status: '工作论文',
+  },
+  {
+    authors: 'Lu, H., Gu, L., Guo, J., Xu, L., et al.',
+    year: '2023',
+    title: 'Machine learning classification and recovery prediction of COVID-19 cough sounds.',
+    venue: 'SSRN (Preprints with The Lancet), 4439141',
+    status: '预印本',
+    link: 'https://ssrn.com/abstract=4439141',
+  },
+  {
+    authors: 'Shao, Y., Guo, J., Li, Z., Yan, W., & Zhu, Z.',
+    year: '2022',
+    title: 'Optimization of seaport companies’ D&A systems based on system dynamics and evaluation models.',
+    venue: 'Proceedings of SPIE, 12340, 1234003',
+    status: '已发表',
+    link: 'https://doi.org/10.1117/12.2652356',
+  },
 ];

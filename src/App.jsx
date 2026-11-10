@@ -1,22 +1,17 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import './App.css';
 import { content, ui, DEFAULT_LANG, RESUME_URL } from './i18n';
-import {
-  Boop,
-  Counter,
-  HeartButton,
-  Reveal,
-  ScrollProgress,
-  Sparkles,
-  ThemeToggle,
-  Typewriter,
-  WaveDivider,
-} from './components';
+import RetractionChart from './figures/RetractionChart';
+import LandfillMap from './figures/LandfillMap';
 
 /**
  * Jiayi (Chesley) Guo's Portfolio
- * Content is defined in ./data.js; this component only handles rendering and interaction.
+ * Content is defined in ./data.js (English) and ./data.zh.js (Chinese); this component only
+ * handles rendering and interaction.
  */
+
+const external = { target: '_blank', rel: 'noreferrer' };
+const BASE = import.meta.env.BASE_URL;
 
 const makeValidators = (t) => ({
   name: (v) => (v.trim().length < 2 ? t.errName : ''),
@@ -35,23 +30,78 @@ const readSavedLang = () => {
 
 const emptyForm = { name: '', email: '', subject: '', message: '' };
 
+// Simple 24×24 line icons for the research-direction cards
+const ICONS = {
+  chat: (
+    <>
+      <path d="M4 5h16v11H9l-5 4z" />
+      <path d="M8 9.5h8M8 12.5h5" />
+    </>
+  ),
+  policy: (
+    <>
+      <path d="M4 17a8 8 0 1 1 16 0" />
+      <path d="M12 17l4.5-5" />
+      <path d="M3 20h18" />
+    </>
+  ),
+  environment: (
+    <>
+      <path d="M3 20h18" />
+      <path d="M6 20v-5h4v5M14 20v-8h4v8" />
+      <path d="M8 11c0-2 1.5-2.5 1.5-4.5M16 8.5c0-1.6 1.2-2 1.2-3.6" />
+    </>
+  ),
+};
+
+function Icon({ name }) {
+  return (
+    <svg className="icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+      {ICONS[name]}
+    </svg>
+  );
+}
+
+/** Headshot from public/; renders nothing until the file has loaded, and nothing if it is missing. */
+function Photo({ src, alt }) {
+  const [state, setState] = useState('loading');
+  if (state === 'error') return null;
+  return (
+    <img
+      className={`glance-photo ${state === 'ok' ? '' : 'is-loading'}`}
+      src={`${BASE}${src}`}
+      alt={alt}
+      onLoad={() => setState('ok')}
+      onError={() => setState('error')}
+    />
+  );
+}
+
+function Authors({ authors }) {
+  return authors.split(/(Guo, J\.)/).map((part, i) =>
+    part === 'Guo, J.' ? <strong key={i}>{part}</strong> : <span key={i}>{part}</span>
+  );
+}
+
 function App() {
   const [lang, setLang] = useState(readSavedLang);
   const t = ui[lang];
   const {
+    NEXT_LINE,
     profile,
+    glance,
+    directions,
     socials,
     navLinks,
     education,
+    honors,
     experience,
+    teaching,
     research,
     researchFilters,
+    retractionChart,
+    landfillMap,
     publications,
-    teaching,
-    skills,
-    honors,
-    extensionStudy,
-    stats,
   } = content[lang];
   const validators = makeValidators(t);
   const [activeSection, setActiveSection] = useState('home');
@@ -81,28 +131,37 @@ function App() {
   const toggleLang = () => setLang((l) => (l === 'zh' ? 'en' : 'zh'));
 
   // ============================================
-  // SMOOTH SCROLL & ACTIVE NAV HIGHLIGHT
+  // SCROLL & ACTIVE NAV HIGHLIGHT
   // ============================================
 
   const scrollTo = (e, id) => {
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById(id)?.scrollIntoView({ block: 'start' });
     setMenuOpen(false);
+  };
+
+  // Direction cards jump to their project; clear the filter first so the card is on the page
+  const openProject = (e, id) => {
+    e.preventDefault();
+    setFilter('all');
+    requestAnimationFrame(() => {
+      const card = document.getElementById(`project-${id}`);
+      card?.scrollIntoView({ block: 'start' });
+      card?.focus({ preventScroll: true });
+    });
   };
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPos = window.scrollY + 100;
-      document.querySelectorAll('section').forEach((section) => {
-        if (
-          scrollPos >= section.offsetTop &&
-          scrollPos < section.offsetTop + section.offsetHeight
-        ) {
+      const scrollPos = window.scrollY + 120;
+      document.querySelectorAll('section[id]').forEach((section) => {
+        if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
           setActiveSection(section.id);
         }
       });
     };
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -113,7 +172,7 @@ function App() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
-    setTouched((t) => ({ ...t, [name]: true }));
+    setTouched((prev) => ({ ...prev, [name]: true }));
     setSent(false);
     if (validators[name]) {
       setErrors((errs) => ({ ...errs, [name]: validators[name](value) }));
@@ -129,7 +188,7 @@ function App() {
     setTouched({ name: true, email: true, message: true });
 
     if (Object.values(nextErrors).every((msg) => !msg)) {
-      // No backend yet: open the visitor's mail client with the message pre-filled
+      // No backend: open the visitor's mail client with the message pre-filled
       const subject = encodeURIComponent(form.subject || t.defaultSubject(form.name));
       const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`);
       window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
@@ -145,27 +204,99 @@ function App() {
     return errors[field] ? 'error' : 'success';
   };
 
-  const visibleResearch =
-    filter === 'all' ? research : research.filter((p) => p.category === filter);
+  const visibleResearch = filter === 'all' ? research : research.filter((p) => p.category === filter);
+  const featuredResearch = visibleResearch.filter((p) => p.featured);
+  const otherResearch = visibleResearch.filter((p) => !p.featured);
   const categoryLabel = (id) => researchFilters.find((f) => f.id === id)?.label ?? id;
+
+  const figureFor = (project) => {
+    if (project.figure === 'retraction-chart') {
+      return (
+        <figure className="figure">
+          <div className="chart-box">
+            <RetractionChart data={retractionChart} axisLabel={retractionChart.title} />
+          </div>
+          <figcaption className="figure-caption">{retractionChart.caption}</figcaption>
+        </figure>
+      );
+    }
+    if (project.figure === 'landfill-map') return <LandfillMap text={landfillMap} />;
+    return null;
+  };
+
+  const renderProject = (project) => {
+    const figure = figureFor(project);
+    return (
+      <article
+        key={project.id}
+        id={`project-${project.id}`}
+        tabIndex={-1}
+        className={`project-card ${project.featured ? 'featured' : ''} ${figure ? 'has-figure' : ''}`}
+      >
+        <div className="project-body">
+          <p className="project-meta">
+            <span>{categoryLabel(project.category)}</span>
+            <span>{project.date}</span>
+          </p>
+          <h3 className="project-title">{project.title}</h3>
+          <p className="project-org">
+            {project.org} · {project.role}
+          </p>
+          <dl className="qmf">
+            <div>
+              <dt>{t.question}</dt>
+              <dd>{project.question}</dd>
+            </div>
+            <div>
+              <dt>{t.method}</dt>
+              <dd>{project.method}</dd>
+            </div>
+            {project.finding && (
+              <div>
+                <dt>{t.finding}</dt>
+                <dd>{project.finding}</dd>
+              </div>
+            )}
+            {!project.finding && project.status && (
+              <div>
+                <dt>{t.status}</dt>
+                <dd>{project.status}</dd>
+              </div>
+            )}
+          </dl>
+          {project.also && <p className="project-also">{project.also}</p>}
+          <ul className="project-tags">
+            {project.tags.map((tag) => (
+              <li key={tag}>{tag}</li>
+            ))}
+          </ul>
+          {project.link && (
+            <a href={project.link} className="text-link" {...external}>
+              {project.linkLabel} <span aria-hidden="true">↗</span>
+            </a>
+          )}
+        </div>
+        {figure && <div className="project-figure">{figure}</div>}
+      </article>
+    );
+  };
 
   return (
     <>
-      <ScrollProgress />
-
       {/* Navigation Bar */}
-      <nav id="navbar">
+      <nav id="navbar" aria-label={lang === 'zh' ? '主导航' : 'Main'}>
         <div className="nav-brand">
           <a href="#home" onClick={(e) => scrollTo(e, 'home')}>
             {profile.shortName}
           </a>
         </div>
-        <ul className={`nav-menu ${menuOpen ? 'active' : ''}`}>
+        <ul id="nav-menu" className={`nav-menu ${menuOpen ? 'active' : ''}`}>
           {navLinks.map(({ id, label }) => (
             <li key={id}>
               <a
                 href={`#${id}`}
                 className={`nav-link ${activeSection === id ? 'active' : ''}`}
+                aria-current={activeSection === id ? 'true' : undefined}
                 onClick={(e) => scrollTo(e, id)}
               >
                 {label}
@@ -174,21 +305,15 @@ function App() {
           ))}
         </ul>
         <div className="nav-actions">
-          <button
-            type="button"
-            className="lang-toggle"
-            onClick={toggleLang}
-            aria-label={t.switchLabel}
-            title={t.switchLabel}
-          >
+          <button type="button" className="lang-toggle" onClick={toggleLang} aria-label={t.switchLabel} title={t.switchLabel}>
             {t.switchTo}
           </button>
-          <ThemeToggle />
           <button
             type="button"
             className={`nav-toggle ${menuOpen ? 'active' : ''}`}
-            aria-label="Toggle navigation menu"
+            aria-label={t.menu}
             aria-expanded={menuOpen}
+            aria-controls="nav-menu"
             onClick={() => setMenuOpen((open) => !open)}
           >
             <span></span>
@@ -200,141 +325,143 @@ function App() {
 
       {/* Hero Section */}
       <section id="home" className="hero">
-        <div className="hero-blobs" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
         <div className="hero-content">
-          <p className="hero-greeting">
-            {t.greeting}{' '}
-            <span className="wave-hand" role="img" aria-label="waving hand">
-              👋
-            </span>
-          </p>
-          <h1 className="hero-title">{profile.name}</h1>
-          <p className="hero-subtitle">
-            {profile.degree} @ <Sparkles>{profile.school}</Sparkles>
-          </p>
-          <p className="hero-focus">
-            {t.love} <Typewriter key={lang} words={profile.passions} />
-          </p>
-          <p className="hero-tagline">{profile.tagline}</p>
-          <div className="hero-buttons">
-            <a
-              href="#research"
-              className="btn btn-primary"
-              onClick={(e) => scrollTo(e, 'research')}
-            >
-              {t.viewWork}
-            </a>
-            <a
-              href="#contact"
-              className="btn btn-secondary"
-              onClick={(e) => scrollTo(e, 'contact')}
-            >
-              {t.getInTouch}
-            </a>
-            <a href={RESUME_URL} className="btn btn-secondary" target="_blank" rel="noreferrer">
-              📄 {t.resume}
-            </a>
+          <div className="hero-main">
+            <p className="hero-eyebrow">
+              {profile.degree} · {profile.school}
+            </p>
+            <h1 className="hero-title">{profile.name}</h1>
+            <p className="hero-next">{NEXT_LINE}</p>
+            <p className="hero-interests">
+              <span className="hero-interests-label">{t.interests}</span>
+              <span className="hero-interests-list">
+                {profile.researchInterests.map((item, i) => (
+                  <Fragment key={item}>
+                    {i > 0 && <span aria-hidden="true"> · </span>}
+                    <span className="interest">{item}</span>
+                  </Fragment>
+                ))}
+              </span>
+            </p>
+            <p className="hero-tagline">{profile.tagline}</p>
+            <div className="hero-buttons">
+              <a href="#research" className="btn btn-primary" onClick={(e) => scrollTo(e, 'research')}>
+                {t.viewWork}
+              </a>
+              <a href="#contact" className="btn btn-secondary" onClick={(e) => scrollTo(e, 'contact')}>
+                {t.getInTouch}
+              </a>
+              <a href={RESUME_URL} className="btn btn-secondary" {...external}>
+                {t.resume}
+              </a>
+            </div>
           </div>
+
+          <aside className="glance" aria-labelledby="glance-title">
+            <Photo src={profile.photo} alt={t.photoAlt} />
+            <div className="glance-card">
+              <h2 id="glance-title" className="glance-title">
+                {t.glance}
+              </h2>
+              <h3 className="glance-label">{t.glanceEducation}</h3>
+              <ul className="glance-list">
+                {glance.education.map((e) => (
+                  <li key={e.degree}>
+                    <span>{e.degree}</span>
+                    <span className="glance-year">{e.year}</span>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="glance-label">{t.glanceAffiliations}</h3>
+              <ul className="glance-list">
+                {glance.affiliations.map((a) => (
+                  <li key={a}>{a}</li>
+                ))}
+              </ul>
+              <p className="glance-links">
+                <a href={`mailto:${profile.email}`}>Email</a>
+                <span aria-hidden="true">·</span>
+                <a href={profile.linkedin} {...external}>
+                  LinkedIn
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href={RESUME_URL} {...external}>
+                  CV
+                </a>
+              </p>
+            </div>
+          </aside>
         </div>
-        <WaveDivider />
       </section>
+
+      {/* Research directions */}
+      <div className="directions-band">
+        <div className="container">
+          <h2 className="sr-only">{t.directions}</h2>
+          <ul className="directions">
+            {directions.map((d) => (
+              <li key={d.project}>
+                <a href={`#project-${d.project}`} className="direction-card" onClick={(e) => openProject(e, d.project)}>
+                  <Icon name={d.icon} />
+                  <span className="direction-title">{d.title}</span>
+                  <span className="direction-text">{d.text}</span>
+                  <span className="direction-more">
+                    {t.seeProject} <span aria-hidden="true">→</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
       {/* About Section */}
       <section id="about" className="section">
         <div className="container">
           <h2>{t.about}</h2>
+          <div className="prose">
+            {profile.bio.map((paragraph) => (
+              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+            ))}
+          </div>
+
+          {profile.positionality && (
+            <div className="prose positionality">
+              <h3 className="subsection-title">{t.positionality}</h3>
+              <p>{profile.positionality}</p>
+            </div>
+          )}
+
           <div className="about-grid">
-            <div className="about-text">
-              {profile.bio.map((paragraph) => (
-                <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-              ))}
-              <div className="about-details">
-                <div className="detail-item">
-                  <span className="detail-icon">
-                    <Boop rotation={-15} scale={1.3}>
-                      📍
-                    </Boop>
-                  </span>
-                  <span>{profile.location}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-icon">
-                    <Boop rotation={15} scale={1.3}>
-                      ✉️
-                    </Boop>
-                  </span>
-                  <a href={`mailto:${profile.email}`}>{profile.email}</a>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-icon">
-                    <Boop y={-4} scale={1.3}>
-                      💼
-                    </Boop>
-                  </span>
-                  <a href={profile.linkedin} target="_blank" rel="noreferrer">
-                    linkedin.com/in/jg1023
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="about-availability">
-              <h3>{t.openTo}</h3>
-              <div className="availability-tags">
-                {profile.openTo.map((item) => (
-                  <span key={item} className="tag tag-available">
-                    {item}
-                  </span>
-                ))}
-              </div>
-              <p className="availability-note">{profile.availability}</p>
-            </div>
-          </div>
-
-          <h3 className="subsection-title">{t.education}</h3>
-          <div className="education-grid">
-            {education.map((edu, i) => (
-              <Reveal key={edu.school} delay={i * 120}>
-                <div className="education-card">
-                  <div className="card-row">
-                    <h4>{edu.school}</h4>
-                    <span className="card-date">{edu.date}</span>
-                  </div>
-                  <p className="card-role">{edu.degree}</p>
-                  <p className="card-meta">{edu.detail}</p>
-                  {edu.gpa && <p className="card-meta">
-                      {t.gpa}: {edu.gpa} / 4.0
-                    </p>}
-                  {edu.courses && (
-                    <p className="card-courses">
-                      <strong>{t.coreCourses}</strong> {edu.courses}
+            <div>
+              <h3 className="subsection-title">{t.education}</h3>
+              <ul className="plain-list">
+                {education.map((edu) => (
+                  <li key={edu.school} className="card education-card">
+                    <div className="card-row">
+                      <h4>{edu.school}</h4>
+                      <span className="card-date">{edu.date}</span>
+                    </div>
+                    <p className="card-role">{edu.degree}</p>
+                    <p className="card-meta">
+                      {edu.detail}
+                      {edu.gpa && ` · ${t.gpa} ${edu.gpa}`}
                     </p>
-                  )}
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* By the Numbers */}
-      <section id="numbers" className="section section-band">
-        <div className="container">
-          <h2>{t.numbers}</h2>
-          <div className="stats-grid">
-            {stats.map((stat, i) => (
-              <Reveal key={stat.label} delay={i * 80}>
-                <div className="stat">
-                  <span className="stat-value">
-                    <Counter value={stat.value} decimals={stat.decimals} suffix={stat.suffix} />
-                  </span>
-                  <span className="stat-label">{stat.label}</span>
-                </div>
-              </Reveal>
-            ))}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="subsection-title">{t.honors}</h3>
+              <ul className="dated-list">
+                {honors.map((honor) => (
+                  <li key={honor.title}>
+                    <span className="dated-list-date">{honor.year}</span>
+                    <span>{honor.title}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -343,9 +470,9 @@ function App() {
       <section id="experience" className="section section-alt">
         <div className="container">
           <h2>{t.experience}</h2>
-          <div className="timeline">
+          <ol className="timeline">
             {experience.map((job) => (
-              <Reveal key={job.company} className="timeline-item">
+              <li key={job.company} className="card timeline-item">
                 <div className="card-row">
                   <h3 className="timeline-company">{job.company}</h3>
                   <span className="card-date">{job.date}</span>
@@ -360,21 +487,20 @@ function App() {
                     <li key={point.slice(0, 32)}>{point}</li>
                   ))}
                 </ul>
-              </Reveal>
+              </li>
             ))}
-          </div>
+          </ol>
 
           <h3 className="subsection-title">{t.teaching}</h3>
-          <ul className="honors-list">
+          <ul className="dated-list">
             {teaching.map((item) => (
-              <li key={item.role} className="honor-item teaching-item">
-                <span className="teaching-date">{item.date}</span>
+              <li key={item.role}>
+                <span className="dated-list-date">{item.date}</span>
                 <span>
                   <strong>{item.role}</strong>
                   {lang === 'zh' ? '，' : ', '}
                   {item.org}
-                  <br />
-                  <span className="card-meta">{item.detail}</span>
+                  <span className="dated-list-detail">{item.detail}</span>
                 </span>
               </li>
             ))}
@@ -387,12 +513,13 @@ function App() {
         <div className="container">
           <h2>{t.research}</h2>
 
-          <div className="filter-buttons">
+          <div className="filter-buttons" role="group" aria-label={t.filterLabel}>
             {researchFilters.map(({ id, label }) => (
               <button
                 key={id}
                 type="button"
                 className={`filter-btn ${filter === id ? 'active' : ''}`}
+                aria-pressed={filter === id}
                 onClick={() => setFilter(id)}
               >
                 {label}
@@ -400,41 +527,14 @@ function App() {
             ))}
           </div>
 
-          <div className="projects-grid">
-            {visibleResearch.map((project, i) => (
-              <Reveal key={project.title} delay={(i % 3) * 100}>
-                <div className={`project-card ${project.featured ? 'featured' : ''}`}>
-                  <div className="project-content">
-                    <div className="project-header">
-                      <span className="project-category">{categoryLabel(project.category)}</span>
-                      <span className="card-date">{project.date}</span>
-                    </div>
-                    <h3 className="project-title">{project.title}</h3>
-                    <p className="project-org">{project.org}</p>
-                    <p className="card-meta">{project.role}</p>
-                    <p className="project-description">{project.description}</p>
-                    <div className="project-tags">
-                      {project.tags.map((tag) => (
-                        <span key={tag} className="project-tag">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    {project.link && (
-                      <a
-                        href={project.link}
-                        className="project-link"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {project.linkLabel ?? t.learnMore}
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+          <div className="projects-featured">
+            {featuredResearch.map(renderProject)}
           </div>
+          {otherResearch.length > 0 && (
+            <div className="projects-grid">
+              {otherResearch.map(renderProject)}
+            </div>
+          )}
 
           <h3 className="subsection-title">{t.publications}</h3>
           <ol className="pub-list">
@@ -442,16 +542,19 @@ function App() {
               <li key={pub.title} className="pub-item">
                 <span className="pub-status">{pub.status}</span>
                 <p>
-                  {pub.authors.split(/(Guo, J\.)/).map((part, i) =>
-                    part === 'Guo, J.' ? <strong key={i}>{part}</strong> : part
-                  )}{' '}
-                  {pub.year && `(${pub.year}). `}
-                  {pub.title} <em>{pub.venue}</em>.
+                  <Authors authors={pub.authors} />
+                  {pub.year && <span> ({pub.year}).</span>} <span>{pub.title}</span>
+                  {pub.venue && (
+                    <>
+                      {' '}
+                      <em>{pub.venue}</em>.
+                    </>
+                  )}
                   {pub.link && (
                     <>
                       {' '}
-                      <a href={pub.link} target="_blank" rel="noreferrer">
-                        {t.pubLink}
+                      <a href={pub.link} className="text-link" {...external}>
+                        {t.pubLink} <span aria-hidden="true">↗</span>
                       </a>
                     </>
                   )}
@@ -462,67 +565,12 @@ function App() {
         </div>
       </section>
 
-      {/* Skills Section */}
-      <section id="skills" className="section section-alt">
-        <div className="container">
-          <h2>{t.skills}</h2>
-          <div className="skills-grid">
-            {skills.map((skill, i) => (
-              <Reveal key={skill.group} delay={(i % 3) * 100}>
-                <div className="skill-card">
-                  <div className="skill-header">
-                    <span className="skill-icon">
-                      <Boop rotation={20} scale={1.25}>
-                        {skill.icon}
-                      </Boop>
-                    </span>
-                    <h3 className="skill-name">{skill.group}</h3>
-                  </div>
-                  <div className="skill-items">
-                    {skill.items.map((item) => (
-                      <span key={item} className="skill-item">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Honors Section */}
-      <section id="honors" className="section">
-        <div className="container">
-          <h2>{t.honors}</h2>
-          <ul className="honors-list">
-            {honors.map((honor) => (
-              <li key={honor.title} className="honor-item">
-                <span className="honor-year">{honor.year}</span>
-                <span>{honor.title}</span>
-              </li>
-            ))}
-          </ul>
-
-          <h3 className="subsection-title">{t.extension}</h3>
-          <ul className="honors-list">
-            {extensionStudy.map((item) => (
-              <li key={item} className="honor-item">
-                <span className="honor-year">🎓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       {/* Contact Section */}
       <section id="contact" className="section section-alt">
         <div className="container">
           <h2>{t.getInTouch}</h2>
           <div className="contact-content">
-            <p>{t.contactIntro}</p>
+            <p className="contact-intro">{t.contactIntro(NEXT_LINE)}</p>
 
             <form id="contact-form" className="contact-form" onSubmit={handleFormSubmit} noValidate>
               <div className="form-grid">
@@ -532,13 +580,12 @@ function App() {
                     type="text"
                     id="name"
                     name="name"
+                    autoComplete="name"
                     value={form.name}
                     className={fieldClass('name')}
                     onChange={handleInputChange}
                   />
-                  {touched.name && errors.name && (
-                    <span className="error-message">{errors.name}</span>
-                  )}
+                  {touched.name && errors.name && <span className="error-message">{errors.name}</span>}
                 </div>
 
                 <div className="form-group">
@@ -547,24 +594,17 @@ function App() {
                     type="email"
                     id="email"
                     name="email"
+                    autoComplete="email"
                     value={form.email}
                     className={fieldClass('email')}
                     onChange={handleInputChange}
                   />
-                  {touched.email && errors.email && (
-                    <span className="error-message">{errors.email}</span>
-                  )}
+                  {touched.email && errors.email && <span className="error-message">{errors.email}</span>}
                 </div>
 
                 <div className="form-group form-group-full">
                   <label htmlFor="subject">{t.subject}</label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={form.subject}
-                    onChange={handleInputChange}
-                  />
+                  <input type="text" id="subject" name="subject" value={form.subject} onChange={handleInputChange} />
                 </div>
 
                 <div className="form-group form-group-full">
@@ -577,20 +617,14 @@ function App() {
                     className={fieldClass('message')}
                     onChange={handleInputChange}
                   ></textarea>
-                  {touched.message && errors.message && (
-                    <span className="error-message">{errors.message}</span>
-                  )}
+                  {touched.message && errors.message && <span className="error-message">{errors.message}</span>}
                 </div>
 
                 <div className="form-group form-group-full">
                   <button type="submit" className="btn btn-primary">
                     {t.send}
                   </button>
-                  {sent && (
-                    <div className="success-message">
-                      {t.sent}
-                    </div>
-                  )}
+                  {sent && <div className="success-message">{t.sent}</div>}
                 </div>
               </div>
             </form>
@@ -600,24 +634,16 @@ function App() {
 
       {/* Footer */}
       <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <HeartButton />
-            <p>
-              &copy; {new Date().getFullYear()} {profile.name}. {t.rights}
-            </p>
-            <div className="social-links">
-              {[...socials, { label: t.resume, url: RESUME_URL }].map(({ label, url }) => (
-                <a
-                  key={label}
-                  href={url}
-                  className="social-link"
-                  {...(!url.startsWith('mailto:') && { target: '_blank', rel: 'noreferrer' })}
-                >
-                  {label}
-                </a>
-              ))}
-            </div>
+        <div className="container footer-content">
+          <p>
+            &copy; {new Date().getFullYear()} {profile.name}. {t.rights}
+          </p>
+          <div className="social-links">
+            {[...socials, { label: t.resume, url: RESUME_URL }].map(({ label, url }) => (
+              <a key={label} href={url} {...(!url.startsWith('mailto:') && external)}>
+                {label}
+              </a>
+            ))}
           </div>
         </div>
       </footer>

@@ -1,4 +1,5 @@
-/* Global CSS Reset */
+/* Global CSS reset. Fonts and colors live in App.css (this file loads after it, so keep it free of
+   font-family or color rules). */
 * {
   margin: 0;
   padding: 0;
@@ -7,14 +8,5 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
 }
