@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { content, ui, DEFAULT_LANG } from './i18n';
+import { content, ui, DEFAULT_LANG, RESUME_URL } from './i18n';
 import {
   Boop,
   Counter,
@@ -234,6 +234,9 @@ function App() {
               onClick={(e) => scrollTo(e, 'contact')}
             >
               {t.getInTouch}
+            </a>
+            <a href={RESUME_URL} className="btn btn-secondary" target="_blank" rel="noreferrer">
+              📄 {t.resume}
             </a>
           </div>
         </div>
@@ -604,12 +607,12 @@ function App() {
               &copy; {new Date().getFullYear()} {profile.name}. {t.rights}
             </p>
             <div className="social-links">
-              {socials.map(({ label, url }) => (
+              {[...socials, { label: t.resume, url: RESUME_URL }].map(({ label, url }) => (
                 <a
                   key={label}
                   href={url}
                   className="social-link"
-                  {...(url.startsWith('http') && { target: '_blank', rel: 'noreferrer' })}
+                  {...(!url.startsWith('mailto:') && { target: '_blank', rel: 'noreferrer' })}
                 >
                   {label}
                 </a>

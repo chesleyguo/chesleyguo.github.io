@@ -7,6 +7,9 @@ import * as zh from './data.zh';
 
 export const DEFAULT_LANG = 'zh';
 
+// Served from public/, so it respects Vite's base path on GitHub Pages
+export const RESUME_URL = `${import.meta.env.BASE_URL}Jiayi_Guo_Resume_final.pdf`;
+
 export const content = { en, zh };
 
 export const ui = {
@@ -16,6 +19,7 @@ export const ui = {
     greeting: 'Hi there, I’m',
     love: 'I love',
     viewWork: 'View My Work',
+    resume: 'View Resume',
     getInTouch: 'Get In Touch',
     about: 'About Me',
     openTo: 'Currently Open To',
@@ -52,6 +56,7 @@ export const ui = {
     greeting: '你好，我是',
     love: '我热爱',
     viewWork: '查看我的作品',
+    resume: '查看简历',
     getInTouch: '联系我',
     about: '关于我',
     openTo: '求职意向',
