@@ -81,12 +81,12 @@ a:hover {
     outline-color: var(--c-gold);
 }
 
-.hero .glance-card :focus-visible {
-    outline-color: var(--c-blue);
-}
-
 [tabindex='-1']:focus:not(:focus-visible) {
     outline: none;
+}
+
+.nowrap {
+    white-space: nowrap;
 }
 
 .sr-only {
@@ -107,7 +107,6 @@ a:hover {
 
 /* Text links: blue text with a thin gold underline */
 .text-link,
-.glance-links a,
 .social-links a,
 .pub-item a {
     color: var(--c-blue);
@@ -119,7 +118,6 @@ a:hover {
 }
 
 .text-link:hover,
-.glance-links a:hover,
 .social-links a:hover,
 .pub-item a:hover {
     text-decoration-color: var(--c-blue);
@@ -476,42 +474,72 @@ a:hover {
     gap: 12px;
 }
 
-/* At a glance (right column on wide screens) */
-.glance {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-width: 520px;
+.hero-affiliations {
+    margin-top: 22px;
+    font: 500 13px/1.5 var(--f-mono);
+    letter-spacing: 0.06em;
+    color: #a9bfd8; /* 6.8:1 on navy */
 }
 
-.glance-photo {
+/* Navy backing behind the glyphs only (invisible on navy) so map dots never sit under this text */
+.hero-affiliations > span,
+.portrait-caption > span {
+    background: var(--c-blue);
+}
+
+/* Portrait with an offset gold frame (right column from 1024px) */
+.hero-portrait {
+    width: 100%;
+    max-width: 320px;
+    margin: 0;
+    justify-self: end;
+}
+
+.portrait-wrap {
+    position: relative;
+    margin-right: 18px; /* room for the frame's offset */
+}
+
+.portrait-frame {
+    position: absolute;
+    inset: 18px -18px -18px 18px;
+    border: 2px solid var(--c-gold);
+    pointer-events: none;
+}
+
+.portrait-photo {
+    position: relative; /* above the frame */
     display: block;
-    width: 120px;
-    height: 120px;
-    margin-bottom: 16px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #ffffff;
-    box-shadow: 0 0 0 1px var(--c-border); /* keeps the white ring visible on the white card */
 }
 
-/* Short screens (e.g. 1280×720): smaller avatar so the whole first screen fits */
-@media (min-width: 1024px) and (max-height: 760px) {
-    .glance-photo {
-        width: 96px;
-        height: 96px;
-        margin-bottom: 12px;
+.portrait-caption {
+    margin-top: 32px; /* clears the frame's 18px overhang */
+    font: 400 12px/1.4 var(--f-mono);
+    letter-spacing: 0.08em;
+    color: #a9bfd8; /* 6.8:1 on navy */
+}
+
+/* Narrow: portrait below the text, centred */
+@media (max-width: 1023px) {
+    .hero-portrait {
+        justify-self: center;
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 767px) {
+    .hero-portrait {
+        max-width: 220px;
     }
 }
 
 .glance-card {
     padding: 24px 26px;
     color: var(--c-ink);
-}
-
-.hero .glance-card {
-    border-color: transparent;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
 }
 
 .glance-title {
@@ -530,36 +558,6 @@ a:hover {
 
 .glance-label:first-of-type {
     margin-top: 0;
-}
-
-.glance-list {
-    list-style: none;
-    font-size: 16px;
-    line-height: 1.45;
-}
-
-.glance-list li {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 3px 0;
-}
-
-.glance-year {
-    flex: none;
-    font: 400 14px/1.6 var(--f-mono);
-    color: var(--c-label);
-}
-
-.glance-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 18px;
-    padding-top: 14px;
-    border-top: 1px solid var(--c-border);
-    font: 500 15px var(--f-mono);
-    color: var(--c-label);
 }
 
 /* ==========================================================================
@@ -1299,8 +1297,8 @@ a:hover {
 /* Two-column hero from 1024px up */
 @media (min-width: 1024px) {
     .hero-content {
-        grid-template-columns: minmax(0, 1fr) 340px;
-        gap: 56px;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 64px;
         align-items: center;
     }
 }
@@ -1794,5 +1792,13 @@ a:hover {
     .quote-mark {
         font-size: 88px;
         line-height: 0.6;
+    }
+}
+
+
+/* Must follow the two-column hero rule above. Short wide screens (1280×720): smaller portrait so the first screen fits */
+@media (min-width: 1024px) and (max-height: 760px) {
+    .hero-content {
+        grid-template-columns: minmax(0, 1fr) 260px;
     }
 }

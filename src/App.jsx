@@ -96,7 +96,6 @@ function App() {
   const {
     NEXT_LINE,
     profile,
-    glance,
     directions,
     socials,
     navLinks,
@@ -353,42 +352,38 @@ function App() {
                 {t.resume}
               </a>
             </div>
+            <p className="hero-affiliations">
+              {profile.heroAffiliations.split(' · ').map((part, i) => (
+                <Fragment key={part}>
+                  {i > 0 && <span aria-hidden="true"> · </span>}
+                  <span className="nowrap">{part}</span>
+                </Fragment>
+              ))}
+            </p>
           </div>
 
-          <aside className="glance" aria-labelledby="glance-title">
-            <div className="glance-card">
-              <Photo src={profile.photo} alt={t.photoAlt} width="600" height="600" eager className="glance-photo" />
-              <h2 id="glance-title" className="glance-title">
-                {t.glance}
-              </h2>
-              <h3 className="glance-label">{t.glanceEducation}</h3>
-              <ul className="glance-list">
-                {glance.education.map((e) => (
-                  <li key={e.degree}>
-                    <span>{e.degree}</span>
-                    <span className="glance-year">{e.year}</span>
-                  </li>
-                ))}
-              </ul>
-              <h3 className="glance-label">{t.glanceAffiliations}</h3>
-              <ul className="glance-list">
-                {glance.affiliations.map((a) => (
-                  <li key={a}>{a}</li>
-                ))}
-              </ul>
-              <p className="glance-links">
-                <a href={`mailto:${profile.email}`}>Email</a>
-                <span aria-hidden="true">·</span>
-                <a href={profile.linkedin} {...external}>
-                  LinkedIn
-                </a>
-                <span aria-hidden="true">·</span>
-                <a href={RESUME_URL} {...external}>
-                  CV
-                </a>
-              </p>
+          <figure className="hero-portrait">
+            <div className="portrait-wrap">
+              <span className="portrait-frame" aria-hidden="true" />
+              <Photo
+                src={profile.portrait}
+                alt={t.photoAlt}
+                width="640"
+                height="800"
+                eager
+                className="portrait-photo"
+              />
             </div>
-          </aside>
+            <figcaption className="portrait-caption">
+              {/* each part stays on one line; breaks fall only between parts */}
+              {profile.portraitCaption.split(' · ').map((part, i) => (
+                <Fragment key={part}>
+                  {i > 0 && <span aria-hidden="true"> · </span>}
+                  <span className="nowrap">{part}</span>
+                </Fragment>
+              ))}
+            </figcaption>
+          </figure>
         </div>
       </section>
 

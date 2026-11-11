@@ -30,7 +30,11 @@ export const profile = {
   // About → Positionality. The section is hidden while this is empty.
   positionality:
     'I grew up with my grandparents in a rural village in China, where a barefoot doctor’s knowledge was all the medical care within reach, and I became the first in my family to attend university. Since then I have moved between rural and urban China, the humanities and the sciences, and AI product teams and public-interest work, and I have seen how often reliable knowledge fails to reach the people who need it most. That question is what brought me to development engineering. I also recognize that I now work from a well-resourced U.S. university and am an outsider to many of the communities my projects touch, from Oakland’s neighborhoods to communities living near landfills, so I try to design with communities and public partners rather than for them.',
-  photo: 'assets/headshot.jpg', // in public/; the photo slot only appears once the file exists
+  photo: 'assets/headshot.jpg', // square; used for the share image (og-image.png)
+  // Hero portrait (4:5) and the small lines around it
+  portrait: 'assets/headshot-portrait.jpg',
+  portraitCaption: 'BERKELEY, CA · ENGLISH / 中文',
+  heroAffiliations: 'NSF NRT FELLOW · BEST LAB · BERKELEY I SCHOOL × OAKLAND DOT',
   location: 'Berkeley, CA',
   email: 'chesleyguo@berkeley.edu',
   linkedin: 'https://www.linkedin.com/in/jg1023',
@@ -42,7 +46,7 @@ export const quote = {
   label: 'The question behind my work',
 };
 
-// Hero right column ("At a glance")
+// (No longer shown: the hero's former "At a glance" card. Kept for reference.)
 export const glance = {
   education: [
     { degree: 'M.Dev.Eng., UC Berkeley', year: '2026' },

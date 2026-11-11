@@ -24,6 +24,9 @@ export const profile = {
   // 关于我 → 立场与背景（Positionality）：留空时显示英文原文
   positionality: '',
   photo: 'assets/headshot.jpg',
+  portrait: 'assets/headshot-portrait.jpg',
+  portraitCaption: 'BERKELEY, CA · ENGLISH / 中文',
+  heroAffiliations: 'NSF NRT FELLOW · BEST LAB · BERKELEY I SCHOOL × OAKLAND DOT',
   location: '美国加州伯克利',
   email: 'chesleyguo@berkeley.edu',
   linkedin: 'https://www.linkedin.com/in/jg1023',
