@@ -42,13 +42,13 @@ export const sections = [
     id: 'hardest-year',
     when: '2022',
     title: 'The hardest year',
-    text: `During research internships in Kunshan and Shanghai, I spent more than six months confined under lockdown, often without a reliable way to get food and unable to reach my family. As a nonbinary person, I also became a target of online harassment as LGBTQ content disappeared from Chinese platforms. That period left me with a disability, and with a second question: who decides what information people receive, and who is accountable when information systems fail them?`,
+    text: `During research internships in Kunshan and Shanghai, I spent more than six months confined under lockdown, often without a reliable way to get food and unable to reach my family. I watched rumors spread faster than facts and voices pleading for help appear online and then vanish, and I became a target of online harassment myself. That year left me with a second question: who decides what information people receive, and who is accountable when information systems fail them?`,
   },
   {
     id: 'information-science',
     when: '2023–2024',
     title: 'Finding information science',
-    text: `I transferred to the University of Illinois Urbana-Champaign to study information science. There I sought treatment, built a strong support system, and saw my grades follow, finishing with a 3.91 GPA as an Edmund J. James Scholar. In my first information science class, Borges’s “The Library of Babel” showed me the field is about how people create, find, and trust knowledge, and I knew it was the problem I wanted to spend my life on.`,
+    text: `I transferred to the University of Illinois Urbana-Champaign to study information science, and my grades followed, finishing with a 3.91 GPA as an Edmund J. James Scholar. In my first information science class, Borges’s “The Library of Babel” showed me the field is about how people create, find, and trust knowledge, and I knew it was the problem I wanted to spend my life on.`,
     photos: [
       {
         images: [
