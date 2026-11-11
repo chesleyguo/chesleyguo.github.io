@@ -257,7 +257,8 @@ export const research = [
     stats: [{ value: '18', label: 'speed safety cameras in Oakland’s pilot' }],
     question: 'Do Oakland’s 18 speed safety cameras change how people drive?',
     method:
-      'A regression discontinuity in time (RDiT) at the two rollout cutoffs separates the effect of camera warnings from the added effect of fines, on three years of high-frequency speed and violation data in a secure GCP environment (CPRA/CCPA).',
+      // rdit_speed_study: speed tubes cleaned for 2024, Jun 2025, Jul 2026; cameras live Jan 14, 2026
+      'A regression discontinuity in time (RDiT) at the two rollout cutoffs separates the effect of camera warnings from the added effect of fines, on speed counts from 2024, 2025 and 2026 and camera violation records since the January 2026 launch, in a secure GCP environment (CPRA/CCPA).',
     finding: '',
     status: 'In progress; results expected Dec 2026.',
     figure: 'camera-map', // locations only, no results
