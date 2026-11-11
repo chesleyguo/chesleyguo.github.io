@@ -7,7 +7,18 @@
     <meta name="description" content="This page does not exist. Return to Jiayi (Chesley) Guo’s portfolio." />
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#003262" />
-    <link rel="icon" href="/deveng_portfolio/favicon.svg" type="image/svg+xml" />
+    <script>
+      // The site moved from /deveng_portfolio/ to the domain root. Old links to any path not
+      // covered by public/deveng_portfolio/ (e.g. the CV PDF) are sent to the same path at the root.
+      (function () {
+        var old = '/deveng_portfolio';
+        var p = location.pathname;
+        if (p === old || p.indexOf(old + '/') === 0) {
+          location.replace((p.slice(old.length) || '/') + location.search + location.hash);
+        }
+      })();
+    </script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap" />
@@ -29,12 +40,12 @@
     </style>
   </head>
   <body>
-    <header><a href="/deveng_portfolio/">Chesley Guo</a></header>
+    <header><a href="/">Chesley Guo</a></header>
     <main>
       <p class="code">404 · PAGE NOT FOUND</p>
       <h1>This page has gone missing.</h1>
       <p>The link may be old or mistyped. Everything else is still on the homepage.</p>
-      <a class="home" href="/deveng_portfolio/">Back to the homepage</a>
+      <a class="home" href="/">Back to the homepage</a>
     </main>
     <footer>Jiayi (Chesley) Guo · UC Berkeley</footer>
   </body>

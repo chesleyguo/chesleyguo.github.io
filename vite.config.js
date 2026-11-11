@@ -6,8 +6,8 @@ const root = import.meta.dirname;
 
 export default defineConfig({
   plugins: [react()],
-  // GitHub Pages serves this repo at https://chesleyguo.github.io/deveng_portfolio/
-  base: '/deveng_portfolio/',
+  // GitHub Pages serves this repo (chesleyguo.github.io) at the domain root
+  base: '/',
   build: {
     // One HTML page per entry: the homepage and the My Story page
     rollupOptions: {
