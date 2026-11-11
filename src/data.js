@@ -260,6 +260,7 @@ export const research = [
       'A regression discontinuity in time (RDiT) at the two rollout cutoffs separates the effect of camera warnings from the added effect of fines, on three years of high-frequency speed and violation data in a secure GCP environment (CPRA/CCPA).',
     finding: '',
     status: 'In progress; results expected Dec 2026.',
+    figure: 'camera-map', // locations only, no results
     tags: ['Causal Inference', 'RDiT', 'Panel Data', 'GCP', 'Python'],
   },
   {
@@ -345,6 +346,13 @@ export const landfillMap = {
   hollow: 'Detected but not quantified',
   caption:
     'The 107 landfills in the airborne survey, sized and shaded by overpass-mean methane emission. Data: Cusworth et al. (2024), Science 383:1499.',
+};
+
+export const cameraMap = {
+  aria: 'Map of Oakland’s city limits showing the locations of the 18 speed safety cameras in the pilot, spread from West and North Oakland to East Oakland.',
+  camera: 'Speed safety camera (18)',
+  limits: 'Oakland city limits',
+  caption: 'Locations of the 18 speed safety cameras in Oakland’s pilot. Data: Oakland Department of Transportation.',
 };
 
 export const publications = [

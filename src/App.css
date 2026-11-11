@@ -1642,6 +1642,24 @@ a:hover {
     color: var(--c-gold-text);
 }
 
+.city-outline {
+    fill: var(--c-bg-alt);
+    stroke: #cfc8b8; /* faint grey, same as the landfill map's coastline */
+    stroke-width: 1;
+}
+
+.city-outline-key {
+    stroke: #cfc8b8;
+    stroke-width: 1.5;
+}
+
+.camera-dot {
+    fill: var(--c-blue);
+    stroke: #ffffff;
+    stroke-width: 1.5;
+    cursor: pointer;
+}
+
 .map-placeholder {
     aspect-ratio: 975 / 610;
     border: 1px solid var(--c-border);

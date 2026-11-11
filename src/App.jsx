@@ -7,6 +7,7 @@ import HeroTexture from './figures/HeroTexture';
 
 // The map pulls in the U.S. state outlines (~100 KB); load it only when the page needs it
 const LandfillMap = lazy(() => import('./figures/LandfillMap'));
+const OaklandCameraMap = lazy(() => import('./figures/OaklandCameraMap'));
 
 /**
  * Jiayi (Chesley) Guo's Portfolio
@@ -108,6 +109,7 @@ function App() {
     retractionChart,
     landfillMap,
     quote,
+    cameraMap,
     publications,
   } = c;
   // Chinese fields left empty fall back to the English text (marked lang="en" for screen readers)
@@ -236,6 +238,13 @@ function App() {
       return (
         <Suspense fallback={<div className="map-placeholder" />}>
           <LandfillMap text={landfillMap} />
+        </Suspense>
+      );
+    }
+    if (project.figure === 'camera-map') {
+      return (
+        <Suspense fallback={<div className="map-placeholder" />}>
+          <OaklandCameraMap text={cameraMap} />
         </Suspense>
       );
     }

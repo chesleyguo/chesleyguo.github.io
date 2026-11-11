@@ -236,6 +236,7 @@ export const research = [
       '在两个上线节点做时间断点回归（RDiT），区分摄像头警告的效应与罚款的额外效应；使用三年高频车速与违章数据，在符合 CPRA/CCPA 的安全 GCP 环境中进行。',
     finding: '',
     status: '进行中，预计 2026 年 12 月出结果。',
+    figure: 'camera-map',
     tags: ['因果推断', '时间断点回归', '面板数据', 'GCP', 'Python'],
   },
   {
@@ -315,6 +316,13 @@ export const landfillMap = {
   unit: 'kg CH₄/h',
   hollow: '检出但未定量',
   caption: '航测覆盖的 107 个填埋场，圆点大小和颜色表示过境平均甲烷排放。数据：Cusworth et al. (2024), Science 383:1499。',
+};
+
+export const cameraMap = {
+  aria: '奥克兰市界地图，标出试点中 18 台测速安全摄像头的位置，分布在西奥克兰、北奥克兰到东奥克兰。',
+  camera: '测速安全摄像头（18 台）',
+  limits: '奥克兰市界',
+  caption: '奥克兰试点中 18 台测速安全摄像头的位置。数据：奥克兰交通局。',
 };
 
 // 论文条目保留英文原始引用格式

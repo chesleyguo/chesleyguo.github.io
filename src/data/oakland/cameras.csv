@@ -1,0 +1,21 @@
+# Oakland speed safety camera sites (18). Public data: OakDOT ArcGIS layer "Final Camera Locations (18)",
+# via rdit_speed_study/scripts/offline_lookups.R (copied 2026-11-04). Location only: no speeds, counts or results.
+location_number,main_street,cross_streets,lat,long
+1,MLK Jr. Way,Between 42nd and 43rd,37.83191314,-122.26786539
+2,Claremont Avenue,Between Hillegass Avenue and College Avenue,37.84782605,-122.25357167
+3,Foothill Blvd,Between Irving and 24th,37.78471865,-122.2314721
+4,Foothill Blvd.,Between 19th and 20th,37.78776393,-122.23880901
+5,7th St.,Between Adeline St and Linden St,37.8036158,-122.28701749
+6,West Grand,Between Chestnut and Linden,37.81518824,-122.28227959
+7,Broadway,Between 26th and 27th St,37.81517812,-122.26440425
+8,San Pablo Avenue,Between Athens and Sycamore,37.81592497,-122.27500119
+9,7th St.,Between Broadway and Franklin Streets,37.79921106,-122.27341116
+10,MacArthur Blvd.,Between Green Acre Road and Enos Ave,37.78532516,-122.19084242
+11,Fruitvale Avenue,Between Galindo Street and Logan Street,37.78725532,-122.22134762
+12,International,Between 40th and 41st,37.77367951,-122.21761878
+13,Hegenberger Road,Between Spencer and Hawley,37.75483707,-122.19262027
+14,73rd Avenue,Between Fresno and Krause,37.76463034,-122.17877853
+15,Bancroft Ave,Between 86th Ave and Auseon Ave,37.75653101,-122.1679851
+16,98th Avenue,Between Blake Drive and Gould Street,37.74033637,-122.17824426
+17,98th Avenue,Between Cherry and Birch,37.74666858,-122.1656223
+18,Bancroft Ave,At 62nd Ave,37.77037119,-122.18766457
