@@ -15,14 +15,6 @@ const OaklandCameraMap = lazy(() => import('./figures/OaklandCameraMap'));
  * handles rendering and interaction.
  */
 
-const makeValidators = (t) => ({
-  name: (v) => (v.trim().length < 2 ? t.errName : ''),
-  email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : t.errEmail),
-  message: (v) => (v.trim().length < 10 ? t.errMessage : ''),
-});
-
-const emptyForm = { name: '', email: '', subject: '', message: '' };
-
 // Simple 24×24 line icons for the research-direction cards
 const ICONS = {
   chat: (
@@ -119,13 +111,8 @@ function App() {
       : { text: content.en.profile[key], lang: lang === 'en' ? undefined : 'en' };
   const researchQuestion = fromEn('researchQuestion');
   const positionality = fromEn('positionality');
-  const validators = makeValidators(t);
   const [activeSection, setActiveSection] = useState('home');
   const [filter, setFilter] = useState('all');
-  const [form, setForm] = useState(emptyForm);
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
-  const [sent, setSent] = useState(false);
 
   // ============================================
   // LANGUAGE
@@ -138,12 +125,6 @@ function App() {
     if (!id) return;
     requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'start' }));
   }, []);
-
-  // Clear form messages when the language changes
-  useEffect(() => {
-    setErrors({});
-    setTouched({});
-  }, [lang]);
 
   // ============================================
   // SCROLL & ACTIVE NAV HIGHLIGHT
@@ -179,49 +160,24 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ============================================
-  // FORM VALIDATION
-  // ============================================
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setForm((f) => ({ ...f, [name]: value }));
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    setSent(false);
-    if (validators[name]) {
-      setErrors((errs) => ({ ...errs, [name]: validators[name](value) }));
-    }
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const nextErrors = Object.fromEntries(
-      Object.entries(validators).map(([field, validate]) => [field, validate(form[field])]),
-    );
-    setErrors(nextErrors);
-    setTouched({ name: true, email: true, message: true });
-
-    if (Object.values(nextErrors).every((msg) => !msg)) {
-      // No backend: open the visitor's mail client with the message pre-filled
-      const subject = encodeURIComponent(form.subject || t.defaultSubject(form.name));
-      const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`);
-      window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-      setForm(emptyForm);
-      setErrors({});
-      setTouched({});
-      setSent(true);
-    }
-  };
-
-  const fieldClass = (field) => {
-    if (!touched[field]) return '';
-    return errors[field] ? 'error' : 'success';
-  };
-
   const visibleResearch = filter === 'all' ? research : research.filter((p) => p.category === filter);
   const featuredResearch = visibleResearch.filter((p) => p.featured);
   const otherResearch = visibleResearch.filter((p) => !p.featured);
   const categoryLabel = (id) => researchFilters.find((f) => f.id === id)?.label ?? id;
+
+  // Earlier (non-featured) projects: one compact row each instead of a full card
+  const renderEarlier = (project) => (
+    <li key={project.id} id={`project-${project.id}`} tabIndex={-1} className="earlier-item">
+      <span className="earlier-date">{project.date}</span>
+      <div>
+        <h4 className="earlier-title">{project.title}</h4>
+        <p className="earlier-org">
+          {project.org} · {project.role}
+        </p>
+        <p className="earlier-summary">{project.finding ? `${project.question} ${project.finding}` : project.question}</p>
+      </div>
+    </li>
+  );
 
   const figureFor = (project) => {
     if (project.figure === 'retraction-chart') {
@@ -447,52 +403,53 @@ function App() {
       <section id="about" className="section">
         <div className="container">
           <SectionTitle num="01">{t.about}</SectionTitle>
-          <div className="prose">
-            {profile.bio.map((paragraph) => (
-              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
-            ))}
-          </div>
+          <div className="about-layout">
+            <div className="about-main">
+              <div className="prose about-bio">
+                {profile.bio.map((paragraph, i) => (
+                  <p key={paragraph.slice(0, 24)} className={i === 0 ? 'lead' : undefined}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
 
-          {positionality.text && (
-            <div className="prose positionality">
-              <h3 className="subsection-title">{t.positionality}</h3>
-              <p lang={positionality.lang}>{positionality.text}</p>
+              {positionality.text && (
+                <div className="prose positionality">
+                  <h3 className="subsection-title">{t.positionality}</h3>
+                  <p lang={positionality.lang}>{positionality.text}</p>
+                </div>
+              )}
+
+              <div className="story-teaser">
+                <div className="story-thumbs">
+                  {STORY_THUMBS.map((img) => (
+                    <Photo key={img.src} src={img.src} alt={img.alt} width={img.w} height={img.h} className="story-thumb" />
+                  ))}
+                </div>
+                <a href={`${BASE}story.html`} className="text-link story-link">
+                  {t.readStory} <span aria-hidden="true">→</span>
+                </a>
+              </div>
             </div>
-          )}
 
-          <div className="story-teaser">
-            <div className="story-thumbs">
-              {STORY_THUMBS.map((img) => (
-                <Photo key={img.src} src={img.src} alt={img.alt} width={img.w} height={img.h} className="story-thumb" />
-              ))}
-            </div>
-            <a href={`${BASE}story.html`} className="text-link story-link">
-              {t.readStory} <span aria-hidden="true">→</span>
-            </a>
-          </div>
-
-          <div className="about-grid">
-            <div>
-              <h3 className="subsection-title">{t.education}</h3>
+            <aside className="about-side">
+              <h3 className="side-title">{t.education}</h3>
               <ul className="plain-list">
                 {education.map((edu) => (
                   <li key={edu.school} className="card education-card">
-                    <div className="card-row">
-                      <h4>{edu.school}</h4>
-                      <span className="card-date">{edu.date}</span>
-                    </div>
+                    <h4>{edu.school}</h4>
                     <p className="card-role">{edu.degree}</p>
                     <p className="card-meta">
                       {edu.detail}
                       {edu.gpa && ` · ${t.gpa} ${edu.gpa}`}
                     </p>
+                    <p className="card-date">{edu.date}</p>
                   </li>
                 ))}
               </ul>
-            </div>
-            <div>
-              <h3 className="subsection-title">{t.honors}</h3>
-              <ul className="dated-list">
+
+              <h3 className="side-title">{t.honors}</h3>
+              <ul className="dated-list honors-list">
                 {honors.map((honor) => (
                   <li key={honor.title}>
                     <span className="dated-list-date">{honor.year}</span>
@@ -500,15 +457,71 @@ function App() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </aside>
           </div>
         </div>
       </section>
 
-      {/* Experience Section */}
-      <section id="experience" className="section section-alt">
+      {/* Research Section */}
+      <section id="research" className="section section-alt">
         <div className="container">
-          <SectionTitle num="02">{t.experience}</SectionTitle>
+          <SectionTitle num="02">{t.research}</SectionTitle>
+
+          <div className="filter-buttons" role="group" aria-label={t.filterLabel}>
+            {researchFilters.map(({ id, label }) => (
+              <button
+                key={id}
+                type="button"
+                className={`filter-btn ${filter === id ? 'active' : ''}`}
+                aria-pressed={filter === id}
+                onClick={() => setFilter(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="projects-featured">{featuredResearch.map(renderProject)}</div>
+          {otherResearch.length > 0 && (
+            <>
+              <h3 className="subsection-title">{t.earlierResearch}</h3>
+              <ol className="earlier-list">{otherResearch.map(renderEarlier)}</ol>
+            </>
+          )}
+
+          <h3 className="subsection-title">{t.publications}</h3>
+          <ol className="pub-list">
+            {publications.map((pub) => (
+              <li key={pub.title} className="pub-item">
+                <span className="pub-status">{pub.status}</span>
+                <p>
+                  <Authors authors={pub.authors} />
+                  {pub.year && <span> ({pub.year}).</span>} <span>{pub.title}</span>
+                  {pub.venue && (
+                    <>
+                      {' '}
+                      <em>{pub.venue}</em>.
+                    </>
+                  )}
+                  {pub.link && (
+                    <>
+                      {' '}
+                      <a href={pub.link} className="text-link" {...external}>
+                        {t.pubLink} <span aria-hidden="true">↗</span>
+                      </a>
+                    </>
+                  )}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Experience Section */}
+      <section id="experience" className="section">
+        <div className="container">
+          <SectionTitle num="03">{t.experience}</SectionTitle>
           <ol className="timeline">
             {experience.map((job) => (
               <li key={job.company} className="card timeline-item">
@@ -547,57 +560,6 @@ function App() {
         </div>
       </section>
 
-      {/* Research Section */}
-      <section id="research" className="section">
-        <div className="container">
-          <SectionTitle num="03">{t.research}</SectionTitle>
-
-          <div className="filter-buttons" role="group" aria-label={t.filterLabel}>
-            {researchFilters.map(({ id, label }) => (
-              <button
-                key={id}
-                type="button"
-                className={`filter-btn ${filter === id ? 'active' : ''}`}
-                aria-pressed={filter === id}
-                onClick={() => setFilter(id)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <div className="projects-featured">{featuredResearch.map(renderProject)}</div>
-          {otherResearch.length > 0 && <div className="projects-grid">{otherResearch.map(renderProject)}</div>}
-
-          <h3 className="subsection-title">{t.publications}</h3>
-          <ol className="pub-list">
-            {publications.map((pub) => (
-              <li key={pub.title} className="pub-item">
-                <span className="pub-status">{pub.status}</span>
-                <p>
-                  <Authors authors={pub.authors} />
-                  {pub.year && <span> ({pub.year}).</span>} <span>{pub.title}</span>
-                  {pub.venue && (
-                    <>
-                      {' '}
-                      <em>{pub.venue}</em>.
-                    </>
-                  )}
-                  {pub.link && (
-                    <>
-                      {' '}
-                      <a href={pub.link} className="text-link" {...external}>
-                        {t.pubLink} <span aria-hidden="true">↗</span>
-                      </a>
-                    </>
-                  )}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
       {/* Contact Section */}
       <section id="contact" className="section section-alt">
         <div className="container">
@@ -606,62 +568,14 @@ function App() {
             <div className="contact-content">
               <p className="contact-intro">{t.contactIntro(NEXT_LINE)}</p>
 
-              <form id="contact-form" className="contact-form" onSubmit={handleFormSubmit} noValidate>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">{t.name}</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      autoComplete="name"
-                      value={form.name}
-                      className={fieldClass('name')}
-                      onChange={handleInputChange}
-                    />
-                    {touched.name && errors.name && <span className="error-message">{errors.name}</span>}
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="email">{t.email}</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      autoComplete="email"
-                      value={form.email}
-                      className={fieldClass('email')}
-                      onChange={handleInputChange}
-                    />
-                    {touched.email && errors.email && <span className="error-message">{errors.email}</span>}
-                  </div>
-
-                  <div className="form-group form-group-full">
-                    <label htmlFor="subject">{t.subject}</label>
-                    <input type="text" id="subject" name="subject" value={form.subject} onChange={handleInputChange} />
-                  </div>
-
-                  <div className="form-group form-group-full">
-                    <label htmlFor="message">{t.message}</label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows="5"
-                      value={form.message}
-                      className={fieldClass('message')}
-                      onChange={handleInputChange}
-                    ></textarea>
-                    {touched.message && errors.message && <span className="error-message">{errors.message}</span>}
-                  </div>
-
-                  <div className="form-group form-group-full">
-                    <button type="submit" className="btn btn-primary">
-                      {t.send}
-                    </button>
-                    {sent && <div className="success-message">{t.sent}</div>}
-                  </div>
-                </div>
-              </form>
+              <div className="contact-actions">
+                <a href={`mailto:${profile.email}`} className="btn btn-primary">
+                  {t.emailMe}
+                </a>
+                <a href={RESUME_URL} className="btn btn-secondary" {...external}>
+                  {t.resume}
+                </a>
+              </div>
             </div>
 
             <aside className="glance-card contact-card" aria-labelledby="contact-direct-title">

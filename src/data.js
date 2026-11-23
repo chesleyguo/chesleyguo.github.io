@@ -24,8 +24,11 @@ export const profile = {
   researchInterests: ['AI for social good', 'information integrity', 'data for development'],
   tagline:
     'I turn messy real-world data into evidence for better decisions and policies, from auditing how consumer LLMs handle retracted clinical trials to measuring the causal impact of speed cameras with the Oakland Department of Transportation.',
+  // About: first paragraph is shown larger as the lead
   bio: [
-    'I’m a Master of Development Engineering student at UC Berkeley (AI/Data Analytics track, graduating December 2026) and an NSF NRT Fellow in Digital Transformation of Development. I study when data and AI can be trusted to inform real decisions: how chatbots handle retracted science, how much methane landfills emit when aircraft see them only a few times, and whether Oakland’s speed cameras change driving. Before Berkeley I earned a B.S. in Information Sciences at UIUC; in industry I designed LLM evaluation metrics at TikTok and ran A/B tests at Tencent. At XJTLU, I founded the university’s first student Law Society, helping peers resolve more than 20 cases by turning institutional rules into steps they could act on.',
+    'I study when data and AI can be trusted to inform real decisions: how chatbots handle retracted science, how much methane landfills emit when aircraft see them only a few times, and whether Oakland’s speed cameras change driving.',
+    'I’m a Master of Development Engineering student at UC Berkeley (AI/Data Analytics track, graduating December 2026) and an NSF NRT Fellow in Digital Transformation of Development. Before Berkeley I earned a B.S. in Information Sciences at UIUC; in industry I designed LLM evaluation metrics at TikTok and ran A/B tests at Tencent.',
+    'At XJTLU, I founded the university’s first student Law Society, helping peers resolve more than 20 cases by turning institutional rules into steps they could act on.',
   ],
   // About → Positionality. The section is hidden while this is empty.
   positionality:
@@ -40,10 +43,11 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/jg1023',
 };
 
-// Quote banner between the research-direction cards and About (from My Story)
+// Quote banner between the research-direction cards and About: a line from My Story
+// (the research question itself is already in the hero)
 export const quote = {
-  text: 'Why does knowledge that could protect people so often fail to reach those who need it most?',
-  label: 'The question behind my work',
+  text: 'Safer care existed even then. It simply had not reached us.',
+  label: 'Where my question began',
 };
 
 // (No longer shown: the hero's former "At a glance" card. Kept for reference.)
@@ -86,8 +90,8 @@ export const socials = [
 export const navLinks = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About' },
-  { id: 'experience', label: 'Experience' },
   { id: 'research', label: 'Research' },
+  { id: 'experience', label: 'Experience' },
   { id: 'contact', label: 'Contact' },
   { id: 'story', label: 'My Story', href: 'story.html' }, // separate page
 ];
